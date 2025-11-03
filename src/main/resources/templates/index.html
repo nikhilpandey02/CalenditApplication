@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendit - Simple, Beautiful Scheduling</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Simple, Beautiful Scheduling</h1>
+            <p>Say goodbye to email back-and-forth. Calendit makes scheduling meetings easy.</p>
+            <a th:href="@{/login}" class="btn btn-primary btn-large">Get Started</a>
+        </div>
+    </div>
+</div>
+
+<div class="features">
+    <div class="container">
+        <h2>Why Calendit?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Easy Scheduling</h3>
+                <p>Share your availability link and let others book time with you.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Google Calendar Sync</h3>
+                <p>Automatic synchronization with your Google Calendar.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Instant Booking</h3>
+                <p>No more back-and-forth emails. Book meetings instantly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Calendit. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

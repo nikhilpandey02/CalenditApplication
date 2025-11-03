@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Calendit</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <h2>Calendit</h2>
+        </div>
+        <div class="navbar-menu">
+            <div class="user-info">
+                <img th:src="${picture}" alt="Profile" class="profile-pic">
+                <span th:text="${name}">User</span>
+            </div>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-secondary">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <div class="dashboard-header">
+            <h1>Your Dashboard</h1>
+            <p>Manage your availability and bookings</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Your Booking Link -->
+<!--            <div class="card">-->
+<!--                <h3>📎 Your Booking Link</h3>-->
+<!--                <p>Share this link with others to let them book time with you:</p>-->
+<!--                <div class="link-box">-->
+<!--                    <input type="text" th:value="${'http://localhost:8080/slots/list?owner=' + user.email}" readonly class="link-input" id="bookingLink">-->
+<!--                    <button class="btn btn-primary btn-small" onclick="copyLink()">Copy</button>-->
+<!--                </div>-->
+<!--            </div>-->
+            <!-- Your Booking Link -->
+            <div class="card">
+                <h3>📎 Your Booking Link</h3>
+                <p>Share this link with others to let them book time with you:</p>
+                <div class="link-box">
+                    <input type="text" th:value="${'http://localhost:8080/slots/list?owner=' + email}" readonly class="link-input" id="bookingLink">
+                    <button class="btn btn-primary btn-small" onclick="copyLink()">Copy</button>
+                </div>
+            </div>
+
+
+            <!-- Add Availability -->
+            <div class="card">
+                <h3>➕ Add Availability</h3>
+                <form th:action="@{/slots/add}" method="post">
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time:</label>
+                        <input type="time" id="time" name="time" required class="form-input">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Slot</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Your Available Slots -->
+        <div class="card">
+            <h3>🗓️ Your Available Slots</h3>
+            <div th:if="${#lists.isEmpty(mySlots)}">
+                <p class="empty-state">You haven't added any slots yet. Add your first slot above!</p>
+            </div>
+            <table th:if="${!#lists.isEmpty(mySlots)}" class="slot-table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="slot : ${mySlots}">
+                    <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>
+                    <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
+                    <td>
+                        <span th:if="${slot.available}" class="badge badge-success">Available</span>
+                        <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/slots/remove}" method="post" style="display: inline;">
+                            <input type="hidden" name="slotId" th:value="${slot.id}">
+                            <button type="submit" class="btn btn-danger btn-small"
+                                    onclick="return confirm('Are you sure you want to remove this slot?')">
+                                Remove
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Your Bookings -->
+        <div class="card">
+            <h3>📋 Your Bookings</h3>
+            <div th:if="${#lists.isEmpty(myBookings)}">
+                <p class="empty-state">You haven't booked any slots yet.</p>
+            </div>
+            <table th:if="${!#lists.isEmpty(myBookings)}" class="slot-table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>With</th>
+                    <th>Booked On</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${myBookings}">
+                    <td th:text="${#temporals.format(booking.slot.date, 'dd MMM yyyy')}"></td>
+                    <td th:text="${#temporals.format(booking.slot.time, 'hh:mm a')}"></td>
+                    <td th:text="${booking.slot.owner.name}"></td>
+                    <td th:text="${#temporals.format(booking.bookingTime, 'dd MMM yyyy hh:mm a')}"></td>
+                    <td>
+                        <form th:action="@{/booking/cancel}" method="post" style="display: inline;">
+                            <input type="hidden" name="bookingId" th:value="${booking.id}">
+                            <button type="submit" class="btn btn-danger btn-small"
+                                    onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                Cancel
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyLink() {
+        var linkInput = document.getElementById('bookingLink');
+        linkInput.select();
+        linkInput.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        alert('Link copied to clipboard!');
+    }
+</script>
+</body>
+</html>

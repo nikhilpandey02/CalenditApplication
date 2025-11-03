@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Book a slot with ' + ${ownerName}">Book a Slot</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <h2>Calendit</h2>
+        </div>
+    </div>
+</nav>
+
+<div class="booking-page">
+    <div class="container">
+        <div class="booking-header">
+            <h1 th:text="'Book a meeting with ' + ${ownerName}">Book a Meeting</h1>
+            <p th:text="'Select an available time slot from ' + ${ownerName} + '''s calendar'"></p>
+        </div>
+
+        <div th:if="${#lists.isEmpty(slots)}" class="card">
+            <p class="empty-state">No available slots at the moment. Please check back later!</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(slots)}" class="slots-grid">
+            <div th:each="slot : ${slots}" class="slot-card">
+                <div class="slot-info">
+                    <div class="slot-date">
+                        <span class="date-day" th:text="${#temporals.day(slot.date)}">15</span>
+                        <span class="date-month" th:text="${#temporals.format(slot.date, 'MMM')}">Nov</span>
+                    </div>
+                    <div class="slot-time">
+                        <p th:text="${#temporals.format(slot.date, 'EEEE, dd MMMM yyyy')}">Monday, 15 November 2025</p>
+                        <p class="time-text" th:text="${#temporals.format(slot.time, 'hh:mm a')}">10:00 AM</p>
+                    </div>
+                </div>
+                <form th:action="@{/booking/book}" method="post">
+                    <input type="hidden" name="slotId" th:value="${slot.id}">
+                    <button type="submit" class="btn btn-primary">Book This Slot</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
