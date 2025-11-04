@@ -19,7 +19,8 @@
     <div class="container">
         <div class="booking-header">
             <h1 th:text="'Book a meeting with ' + ${ownerName}">Book a Meeting</h1>
-            <p th:text="'Select an available time slot from ' + ${ownerName} + '''s calendar'"></p>
+<!--            <p th:text="'Select an available time slot from ' + ${ownerName} + '''s calendar'"></p>-->
+            <p th:text="'Select an available time slot from ' + ${ownerName} + '’s calendar'"></p>
         </div>
 
         <div th:if="${#lists.isEmpty(slots)}" class="card">

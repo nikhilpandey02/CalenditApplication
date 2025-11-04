@@ -14,24 +14,25 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Slot {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private LocalDate date;
-    
+
     @Column(nullable = false)
     private LocalTime time;
-    
+
     @Column(nullable = false)
     private boolean available = true;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-    
-    @OneToOne(mappedBy = "slot")
+
+    // CRITICAL: Change to EAGER to load booking info with slot
+    @OneToOne(mappedBy = "slot", fetch = FetchType.EAGER)
     private Booking booking;
 }

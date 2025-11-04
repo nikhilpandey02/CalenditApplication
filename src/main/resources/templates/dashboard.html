@@ -73,6 +73,42 @@
         </div>
 
         <!-- Your Available Slots -->
+<!--        <div class="card">-->
+<!--            <h3>🗓️ Your Available Slots</h3>-->
+<!--            <div th:if="${#lists.isEmpty(mySlots)}">-->
+<!--                <p class="empty-state">You haven't added any slots yet. Add your first slot above!</p>-->
+<!--            </div>-->
+<!--            <table th:if="${!#lists.isEmpty(mySlots)}" class="slot-table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>Date</th>-->
+<!--                    <th>Time</th>-->
+<!--                    <th>Status</th>-->
+<!--                    <th>Actions</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="slot : ${mySlots}">-->
+<!--                    <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>-->
+<!--                    <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>-->
+<!--                    <td>-->
+<!--                        <span th:if="${slot.available}" class="badge badge-success">Available</span>-->
+<!--                        <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <form th:action="@{/slots/remove}" method="post" style="display: inline;">-->
+<!--                            <input type="hidden" name="slotId" th:value="${slot.id}">-->
+<!--                            <button type="submit" class="btn btn-danger btn-small"-->
+<!--                                    onclick="return confirm('Are you sure you want to remove this slot?')">-->
+<!--                                Remove-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+        <!-- Your Available Slots -->
         <div class="card">
             <h3>🗓️ Your Available Slots</h3>
             <div th:if="${#lists.isEmpty(mySlots)}">
@@ -93,7 +129,12 @@
                     <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
                     <td>
                         <span th:if="${slot.available}" class="badge badge-success">Available</span>
-                        <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
+                        <span th:if="${!slot.available && slot.booking != null}" class="badge badge-booked">
+                        Booked by <strong th:text="${slot.booking.bookedBy.name}">User Name</strong>
+                    </span>
+                        <span th:if="${!slot.available && slot.booking == null}" class="badge badge-booked">
+                        Booked
+                    </span>
                     </td>
                     <td>
                         <form th:action="@{/slots/remove}" method="post" style="display: inline;">
@@ -108,6 +149,7 @@
                 </tbody>
             </table>
         </div>
+
 
         <!-- Your Bookings -->
         <div class="card">
