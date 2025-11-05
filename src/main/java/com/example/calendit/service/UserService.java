@@ -43,6 +43,7 @@ package com.example.calendit.service;
 import com.example.calendit.model.User;
 import com.example.calendit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Optional<User> saveOrUpdateUser(String email, String name, String picture, String googleId) {
@@ -65,18 +67,30 @@ public class UserService {
         User user;
         if (existingUser.isPresent()) {
             user = existingUser.get();
-            user.setName(name);
-            user.setPicture(picture);
-            user.setGoogleId(googleId);
         } else {
             user = new User();
             user.setEmail(email);
-            user.setName(name);
-            user.setPicture(picture);
-            user.setGoogleId(googleId);
         }
+        user.setName(name);
+        user.setPicture(picture);
+        user.setGoogleId(googleId);
+        user.setProvider("GOOGLE");
 
         return Optional.of(userRepository.save(user));
+    }
+
+    public User registerUser(String name, String email, String password) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email already registered!");
+        }
+
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setProvider("LOCAL");
+
+        return userRepository.save(user);
     }
 
     public Optional<User> findByEmail(String email) {

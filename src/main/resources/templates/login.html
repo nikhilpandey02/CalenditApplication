@@ -10,8 +10,22 @@
 <div class="login-page">
     <div class="login-container">
         <div class="login-box">
+            <div th:if="${param.error}" style="color: red; margin-bottom: 10px;">
+                Invalid username or password. Please try again.
+            </div>
+
             <h1>Welcome to Calendit</h1>
-            <p>Sign in with your Google account to get started</p>
+
+            <!-- Manual Login Form -->
+            <form th:action="@{/login}" method="post" class="login-form">
+                <input type="email" name="username" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+            <div class="divider">or</div>
+<!--            <p>Sign in with your Google account to get started</p>-->
+            <!-- Google Login -->
             <a href="/oauth2/authorization/google" class="btn btn-google">
                 <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -22,6 +36,8 @@
                 Sign in with Google
             </a>
             <p class="login-footer">By signing in, you agree to our Terms of Service and Privacy Policy</p>
+
+            <p><a th:href="@{/signup}">Create an account</a> | <a th:href="@{/forgot-password}">Forgot password?</a></p>
         </div>
     </div>
 </div>

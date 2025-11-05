@@ -58,6 +58,7 @@ import com.example.calendit.service.SlotService;
 import com.example.calendit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -133,14 +134,33 @@ public class DashboardController {
     private final BookingService bookingService;
 
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal OAuth2User principal, Model model) {
-        String email = principal.getAttribute("email");
-        String name = principal.getAttribute("name");
-        String picture = principal.getAttribute("picture");
-        String googleId = principal.getAttribute("sub");
+    public String dashboard(@AuthenticationPrincipal Object principal, Model model) {
+        String email = null;
+        String name = null;
+        String picture = null;
+        String googleId = null;
+        User user = null;
 
-        // Save or update user
-        User user = userService.saveOrUpdateUser(email, name, picture, googleId).orElse(null);
+        if (principal instanceof OAuth2User oAuth2User){
+            email = oAuth2User.getAttribute("email");
+            name = oAuth2User.getAttribute("name");
+            picture = oAuth2User.getAttribute("picture");
+            googleId = oAuth2User.getAttribute("sub");
+
+            user = userService.saveOrUpdateUser(email, name, picture, googleId).orElse(null);
+        }
+
+        else if (principal instanceof UserDetails userDetails){
+            email = userDetails.getUsername();
+            user = userService.findByEmail(email).orElse(null);
+
+            if (user != null) {
+                name = user.getName();
+                picture = (user.getPicture() != null) ? user.getPicture() : "/images/default.png";
+            } else {
+                picture = "/images/default.png";
+            }
+        }
 
         if (user == null) {
             user = new User();

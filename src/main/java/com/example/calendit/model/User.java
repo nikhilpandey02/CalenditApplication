@@ -28,6 +28,11 @@ public class User {
     
     @Column(name = "google_id")
     private String googleId;
+
+    private String password;
+
+    @Column(nullable = false)
+    private String provider = "LOCAL";
     
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Slot> slots = new ArrayList<>();
