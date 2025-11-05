@@ -530,3 +530,82 @@ footer p {
     flex: 1;
     min-width: 1100px;
 }
+/* ============================= */
+/* Profile Dropdown Menu Styling */
+/* ============================= */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.dropdown-toggle img.profile-pic {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #667eea;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dropdown-toggle img.profile-pic:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px;
+    background-color: #fff;
+    min-width: 180px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    z-index: 1000;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+/* Show menu when active */
+.dropdown-menu.show {
+    display: block;
+}
+
+/* Dropdown Items */
+.dropdown-item,
+.logout-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover,
+.logout-btn:hover {
+    background-color: #f3f4f6;
+}
+
+/* User name in dropdown */
+.user-name {
+    font-weight: 600;
+    color: #1a202c;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 5px;
+}

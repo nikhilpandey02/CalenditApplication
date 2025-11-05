@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Calendit</title>
+    <title>Dashboard - Calendly</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <nav class="navbar">
     <div class="container">
         <div class="navbar-brand">
-            <h2>Calendit</h2>
+            <h2>Calendly</h2>
         </div>
+
         <div class="navbar-menu">
-            <div class="user-info">
-                <img th:src="${picture}" alt="Profile" class="profile-pic">
-                <span th:text="${name}">User</span>
+            <!-- If user is logged in -->
+            <div sec:authorize="isAuthenticated()">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                        <img th:src="${picture}" alt="Profile" class="profile-pic">
+                    </button>
+                    <div id="dropdownMenu" class="dropdown-menu">
+                        <p class="user-name" th:text="${name}">User</p>
+                        <a th:href="@{/profile}" class="dropdown-item">Profile</a>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-secondary">Logout</button>
-            </form>
+
+            <!-- If user is NOT logged in -->
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-primary">Login</a>
+            </div>
         </div>
     </div>
 </nav>
@@ -211,6 +225,17 @@
         document.execCommand('copy');
         alert('Link copied to clipboard!');
     }
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        dropdownMenu.classList.toggle('show');
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+        }
+    });
 </script>
 </body>
 </html>
