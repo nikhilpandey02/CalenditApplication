@@ -46,37 +46,6 @@
                 </form>
             </div>
         </div>
-
-        <!-- Add Availability Section -->
-        <div class="card add-availability">
-            <h3>➕ Add Availability</h3>
-            <form th:action="@{/slots/add}" method="post">
-                <div class="form-group">
-                    <label for="meetingName">Meeting Name:</label>
-                    <input type="text" id="meetingName" name="meetingName"
-                           placeholder="e.g. Intro Call" required class="form-input">
-                </div>
-
-                <div class="form-group">
-                    <label for="durationMinutes">Duration (minutes):</label>
-                    <input type="number" id="durationMinutes" name="durationMinutes"
-                           placeholder="30" min="15" step="15" required class="form-input">
-                </div>
-
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required class="form-input">
-                </div>
-
-                <div class="form-group">
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" name="time" required class="form-input">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Add Slot</button>
-            </form>
-        </div>
-    </div>
 </div>
 </body>
 </html>
