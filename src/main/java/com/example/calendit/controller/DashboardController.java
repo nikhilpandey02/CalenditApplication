@@ -156,9 +156,9 @@ public class DashboardController {
 
             if (user != null) {
                 name = user.getName();
-                picture = (user.getPicture() != null) ? user.getPicture() : "/images/default.png";
+                picture = (user.getPicture() != null) ? user.getPicture() : "/images/default.jpg";
             } else {
-                picture = "/images/default.png";
+                picture = "/images/default.jpg";
             }
         }
 
