@@ -24,8 +24,12 @@
 
 <div class="profile-container">
     <div class="profile-card">
-        <img th:if="${user.picture != null}" th:src="${user.picture}" alt="Profile Picture" class="profile-large">
-        <img th:if="${user.picture == null}" src="/images/default-avatar.png" alt="Default Avatar" class="profile-large">
+        <img th:if="${user != null}"
+             th:src="${user.picture != null} ? ${user.picture} : @{/images/default-avatar.png}"
+             alt="Profile Picture"
+             class="profile-large">
+
+        <img th:if="${user == null}" th:src="@{/images/default-avatar.png}" alt="Default Avatar" class="profile-large">
 
         <h2 th:text="${user.name != null ? user.name : 'No Name'}"></h2>
         <p th:text="${user.email}"></p>
