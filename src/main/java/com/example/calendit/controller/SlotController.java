@@ -30,23 +30,28 @@ public class SlotController {
     public String addSlotForm(Model model) {
         return "add-slot";
     }
-    
+
     @PostMapping("/add")
     public String addSlot(@AuthenticationPrincipal OAuth2User principal,
+                          @RequestParam String meetingName,
+                          @RequestParam int durationMinutes,
                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                           @RequestParam @DateTimeFormat(pattern = "HH:mm") LocalTime time,
                           RedirectAttributes redirectAttributes) {
+
         String email = principal.getAttribute("email");
         Optional<User> userOpt = userService.findByEmail(email);
-        
+
         if (userOpt.isPresent()) {
-            slotService.createSlot(userOpt.get(), date, time);
-            redirectAttributes.addFlashAttribute("success", "Slot added successfully!");
+            slotService.createSlot(userOpt.get(), meetingName, durationMinutes, date, time);
+            redirectAttributes.addFlashAttribute("success", "Meeting slot added successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User not found.");
         }
-        
+
         return "redirect:/dashboard";
     }
-    
+
     @GetMapping("/list")
     public String listSlots(@RequestParam String owner, Model model) {
         Optional<User> userOpt = userService.findByEmail(owner);

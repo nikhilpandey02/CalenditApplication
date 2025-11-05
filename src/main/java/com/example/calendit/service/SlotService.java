@@ -19,13 +19,15 @@ public class SlotService {
     private final SlotRepository slotRepository;
     
     @Transactional
-    public Slot createSlot(User owner, LocalDate date, LocalTime time) {
+    public void createSlot(User owner, String meetingName, int durationMinutes, LocalDate date, LocalTime time) {
         Slot slot = new Slot();
         slot.setOwner(owner);
+        slot.setMeetingName(meetingName);
+        slot.setDurationMinutes(durationMinutes);
         slot.setDate(date);
         slot.setTime(time);
         slot.setAvailable(true);
-        return slotRepository.save(slot);
+        slotRepository.save(slot);
     }
     
     public List<Slot> getAvailableSlots(User owner) {

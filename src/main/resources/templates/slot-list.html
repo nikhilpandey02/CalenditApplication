@@ -17,12 +17,13 @@
 
 <div class="booking-page">
     <div class="container">
+        <!-- Booking Header -->
         <div class="booking-header">
             <h1 th:text="'Book a meeting with ' + ${ownerName}">Book a Meeting</h1>
-<!--            <p th:text="'Select an available time slot from ' + ${ownerName} + '''s calendar'"></p>-->
             <p th:text="'Select an available time slot from ' + ${ownerName} + '’s calendar'"></p>
         </div>
 
+        <!-- Available Slots -->
         <div th:if="${#lists.isEmpty(slots)}" class="card">
             <p class="empty-state">No available slots at the moment. Please check back later!</p>
         </div>
@@ -44,6 +45,36 @@
                     <button type="submit" class="btn btn-primary">Book This Slot</button>
                 </form>
             </div>
+        </div>
+
+        <!-- Add Availability Section -->
+        <div class="card add-availability">
+            <h3>➕ Add Availability</h3>
+            <form th:action="@{/slots/add}" method="post">
+                <div class="form-group">
+                    <label for="meetingName">Meeting Name:</label>
+                    <input type="text" id="meetingName" name="meetingName"
+                           placeholder="e.g. Intro Call" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="durationMinutes">Duration (minutes):</label>
+                    <input type="number" id="durationMinutes" name="durationMinutes"
+                           placeholder="30" min="15" step="15" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="time">Time:</label>
+                    <input type="time" id="time" name="time" required class="form-input">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Slot</button>
+            </form>
         </div>
     </div>
 </div>

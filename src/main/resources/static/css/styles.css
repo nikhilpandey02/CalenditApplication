@@ -518,3 +518,15 @@ footer p {
         gap: 10px;
     }
 }
+
+.dashboard-flex {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.dashboard-flex .card {
+    flex: 1;
+    min-width: 1100px;
+}
