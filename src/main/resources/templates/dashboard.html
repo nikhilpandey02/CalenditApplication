@@ -162,7 +162,8 @@
                     <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
                     <td>
                         <span th:if="${slot.available}" class="badge badge-success">Available</span>
-                        <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
+                        <span th:if="${!slot.available}" class="badge badge-booked"
+                              th:text="${'Booked by ' + slot.booking.bookedBy.name}"></span>
                     </td>
                     <td>
                         <form th:action="@{/slots/remove}" method="post" style="display: inline;">
