@@ -77,8 +77,8 @@ public class BookingController {
                 Calendit Team
                 """, user.getName(), slot.getDate(), slot.getTime(), googleEventId);
 
-                emailService.sendBookingConfirmation(user.getEmail(), subject, body);
-                emailService.sendBookingConfirmation(slot.getOwner().getEmail(), subject, body);
+                emailService.sendEmail(user.getEmail(), subject, body);
+                emailService.sendEmail(slot.getOwner().getEmail(), subject, body);
             } else {
                 redirectAttributes.addFlashAttribute("failure", "You cannot book your own slot");
             }
