@@ -7,6 +7,7 @@ import com.example.calendit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,31 +23,46 @@ import java.util.Optional;
 @RequestMapping("/slots")
 @RequiredArgsConstructor
 public class SlotController {
-    
+
     private final SlotService slotService;
     private final UserService userService;
-    
+
     @GetMapping("/add")
     public String addSlotForm(Model model) {
         return "add-slot";
     }
 
     @PostMapping("/add")
-    public String addSlot(@AuthenticationPrincipal OAuth2User principal,
+    public String addSlot(@AuthenticationPrincipal Object principal,
                           @RequestParam String meetingName,
                           @RequestParam int durationMinutes,
                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                           @RequestParam @DateTimeFormat(pattern = "HH:mm") LocalTime time,
                           RedirectAttributes redirectAttributes) {
 
-        String email = principal.getAttribute("email");
-        Optional<User> userOpt = userService.findByEmail(email);
+        String email = null;
+        User user = null;
 
-        if (userOpt.isPresent()) {
-            slotService.createSlot(userOpt.get(), meetingName, durationMinutes, date, time);
+        // ✅ Handle Google OAuth2 login
+        if (principal instanceof OAuth2User oAuth2User) {
+            email = oAuth2User.getAttribute("email");
+            String name = oAuth2User.getAttribute("name");
+            String picture = oAuth2User.getAttribute("picture");
+            String googleId = oAuth2User.getAttribute("sub");
+
+            user = userService.saveOrUpdateUser(email, name, picture, googleId).orElse(null);
+        }
+        // ✅ Handle manual form login
+        else if (principal instanceof UserDetails userDetails) {
+            email = userDetails.getUsername();
+            user = userService.findByEmail(email).orElse(null);
+        }
+
+        if (user != null) {
+            slotService.createSlot(user, meetingName, durationMinutes, date, time);
             redirectAttributes.addFlashAttribute("success", "Meeting slot added successfully!");
         } else {
-            redirectAttributes.addFlashAttribute("error", "User not found.");
+            redirectAttributes.addFlashAttribute("error", "Unable to find logged-in user.");
         }
 
         return "redirect:/dashboard";
@@ -55,17 +71,17 @@ public class SlotController {
     @GetMapping("/list")
     public String listSlots(@RequestParam String owner, Model model) {
         Optional<User> userOpt = userService.findByEmail(owner);
-        
+
         if (userOpt.isPresent()) {
             List<Slot> slots = slotService.getAvailableSlots(userOpt.get());
             model.addAttribute("slots", slots);
             model.addAttribute("ownerEmail", owner);
             model.addAttribute("ownerName", userOpt.get().getName());
         }
-        
+
         return "slot-list";
     }
-    
+
     @PostMapping("/remove")
     public String removeSlot(@RequestParam Long slotId, RedirectAttributes redirectAttributes) {
         slotService.deleteSlot(slotId);
