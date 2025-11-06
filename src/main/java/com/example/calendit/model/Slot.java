@@ -39,6 +39,6 @@ public class Slot {
     private User owner;
 
     // CRITICAL: Change to EAGER to load booking info with slot
-    @OneToOne(mappedBy = "slot", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "slot", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Booking booking;
 }
