@@ -20,7 +20,10 @@ public class BookingService {
     private final SlotService slotService;
     
     @Transactional
-    public Booking createBooking(Slot slot, User bookedBy, String googleEventId) {
+    public boolean createBooking(Slot slot, User bookedBy, String googleEventId) {
+        if(slot.getOwner().getId().equals(bookedBy.getId())){
+            return false;
+        }
         Booking booking = new Booking();
         booking.setSlot(slot);
         booking.setBookedBy(bookedBy);
@@ -29,8 +32,11 @@ public class BookingService {
         
         slotService.markSlotAsBooked(slot);
         
-        return bookingRepository.save(booking);
+        bookingRepository.save(booking);
+
+        return true;
     }
+
     
     public List<Booking> getBookingsByUser(User user) {
         return bookingRepository.findByBookedBy(user);

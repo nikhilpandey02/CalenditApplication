@@ -41,6 +41,7 @@
 <div class="dashboard-container">
     <div class="container">
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${failure}" class="alert alert-danger" th:text="${failure}"></div>
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
         <div class="dashboard-header">
