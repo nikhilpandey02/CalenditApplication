@@ -28,6 +28,12 @@ public class Slot {
     @Column(nullable = false)
     private boolean available = true;
 
+    @Column(nullable = false)
+    private String meetingName;
+
+    @Column(nullable = false)
+    private int durationMinutes;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

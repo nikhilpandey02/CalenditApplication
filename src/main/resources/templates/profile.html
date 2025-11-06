@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Calendly</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <h2>Calendly</h2>
+        </div>
+        <div class="navbar-menu">
+            <a th:href="@{/dashboard}" class="btn btn-secondary btn-small">Dashboard</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-small">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <img th:if="${user != null}"
+             th:src="${user.picture != null} ? ${user.picture} : @{/images/default-avatar.png}"
+             alt="Profile Picture"
+             class="profile-large">
+
+        <img th:if="${user == null}" th:src="@{/images/default-avatar.png}" alt="Default Avatar" class="profile-large">
+
+        <h2 th:text="${user.name != null ? user.name : 'No Name'}"></h2>
+        <p th:text="${user.email}"></p>
+
+        <form th:action="@{/logout}" method="post" style="margin-top: 25px;">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

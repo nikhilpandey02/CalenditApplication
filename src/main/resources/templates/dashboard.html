@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Calendit</title>
+    <title>Dashboard - Calendly</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <nav class="navbar">
     <div class="container">
         <div class="navbar-brand">
-            <h2>Calendit</h2>
+            <h2>Calendly</h2>
         </div>
+
         <div class="navbar-menu">
-            <div class="user-info">
-                <img th:src="${picture}" alt="Profile" class="profile-pic">
-                <span th:text="${name}">User</span>
+            <!-- If user is logged in -->
+            <div sec:authorize="isAuthenticated()">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                        <img th:src="${picture}" alt="Profile" class="profile-pic">
+                    </button>
+                    <div id="dropdownMenu" class="dropdown-menu">
+                        <p class="user-name" th:text="${name}">User</p>
+                        <a th:href="@{/profile}" class="dropdown-item">Profile</a>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-secondary">Logout</button>
-            </form>
+
+            <!-- If user is NOT logged in -->
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-primary">Login</a>
+            </div>
         </div>
     </div>
 </nav>
@@ -60,19 +74,32 @@
                 <h3>➕ Add Availability</h3>
                 <form th:action="@{/slots/add}" method="post">
                     <div class="form-group">
+                        <label for="meetingName">Meeting Name:</label>
+                        <input type="text" id="meetingName" name="meetingName"
+                               placeholder="e.g. Intro Call" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
                         <label for="date">Date:</label>
                         <input type="date" id="date" name="date" required class="form-input">
                     </div>
+
                     <div class="form-group">
                         <label for="time">Time:</label>
                         <input type="time" id="time" name="time" required class="form-input">
                     </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes):</label>
+                        <input type="number" id="duration" name="durationMinutes"
+                               placeholder="e.g. 30" min="5" step="5" required class="form-input">
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Add Slot</button>
                 </form>
             </div>
-        </div>
 
-        <!-- Your Available Slots -->
+            <!-- Your Available Slots -->
 <!--        <div class="card">-->
 <!--            <h3>🗓️ Your Available Slots</h3>-->
 <!--            <div th:if="${#lists.isEmpty(mySlots)}">-->
@@ -109,6 +136,7 @@
 <!--            </table>-->
 <!--        </div>-->
         <!-- Your Available Slots -->
+            <div class="dashboard-flex">
         <div class="card">
             <h3>🗓️ Your Available Slots</h3>
             <div th:if="${#lists.isEmpty(mySlots)}">
@@ -117,6 +145,8 @@
             <table th:if="${!#lists.isEmpty(mySlots)}" class="slot-table">
                 <thead>
                 <tr>
+                    <th>Meeting Name</th>
+                    <th>Duration</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -125,16 +155,13 @@
                 </thead>
                 <tbody>
                 <tr th:each="slot : ${mySlots}">
+                    <td th:text="${slot.meetingName}"></td>
+                    <td th:text="${slot.durationMinutes + ' min'}"></td>
                     <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>
                     <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
                     <td>
                         <span th:if="${slot.available}" class="badge badge-success">Available</span>
-                        <span th:if="${!slot.available && slot.booking != null}" class="badge badge-booked">
-                        Booked by <strong th:text="${slot.booking.bookedBy.name}">User Name</strong>
-                    </span>
-                        <span th:if="${!slot.available && slot.booking == null}" class="badge badge-booked">
-                        Booked
-                    </span>
+                        <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
                     </td>
                     <td>
                         <form th:action="@{/slots/remove}" method="post" style="display: inline;">
@@ -186,6 +213,7 @@
                 </tbody>
             </table>
         </div>
+            </div>
     </div>
 </div>
 
@@ -197,6 +225,17 @@
         document.execCommand('copy');
         alert('Link copied to clipboard!');
     }
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        dropdownMenu.classList.toggle('show');
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+        }
+    });
 </script>
 </body>
 </html>

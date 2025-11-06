@@ -3,10 +3,7 @@ package com.example.calendit.controller;
 import com.example.calendit.model.Booking;
 import com.example.calendit.model.Slot;
 import com.example.calendit.model.User;
-import com.example.calendit.service.BookingService;
-import com.example.calendit.service.SlotService;
-import com.example.calendit.service.UserService;
-import com.example.calendit.service.GoogleCalendarService;
+import com.example.calendit.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -27,6 +24,7 @@ public class BookingController {
     private final SlotService slotService;
     private final UserService userService;
     private final GoogleCalendarService googleCalendarService;
+    private final EmailService emailService;
     
     @PostMapping("/book")
     public String bookSlot(@AuthenticationPrincipal OAuth2User principal,
@@ -58,6 +56,21 @@ public class BookingController {
             
             bookingService.createBooking(slot, user, googleEventId);
             redirectAttributes.addFlashAttribute("success", "Booking created successfully!");
+
+            // Send Email to both
+            String subject = "📅 Your meeting is booked!";
+            String body = String.format("""
+                Hello %s,
+                
+                Your meeting has been scheduled on %s at %s.
+                Join via Google Meet: %s
+                
+                Regards,
+                Calendit Team
+                """, user.getName(), slot.getDate(), slot.getTime(), googleEventId);
+
+            emailService.sendBookingConfirmation(user.getEmail(), subject, body);
+            emailService.sendBookingConfirmation(slot.getOwner().getEmail(), subject, body);
         }
         
         return "redirect:/dashboard";
