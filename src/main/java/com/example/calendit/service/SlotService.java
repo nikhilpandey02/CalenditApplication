@@ -128,4 +128,5 @@ public class SlotService {
         return slotRepository.findByOwnerAndDateLessThan(owner, LocalDate.now());
     }
 
+
 }

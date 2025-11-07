@@ -10,12 +10,9 @@ import java.util.List;
 
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, Long> {
+    List<Slot> findByOwner(User owner);
     List<Slot> findByOwnerAndAvailableTrue(User owner);
     List<Slot> findByOwnerAndDateAfterAndAvailableTrue(User owner, LocalDate date);
-    List<Slot> findByOwner(User owner);
-
     List<Slot> findByOwnerAndDateGreaterThanEqual(User owner, LocalDate date);
     List<Slot> findByOwnerAndDateLessThan(User owner, LocalDate date);
-
-
 }
