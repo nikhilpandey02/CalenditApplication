@@ -120,4 +120,12 @@ public class SlotService {
         slot.setAvailable(true);
         slotRepository.save(slot);
     }
+    public List<Slot> getUpcomingSlots(User owner) {
+        return slotRepository.findByOwnerAndDateGreaterThanEqual(owner, LocalDate.now());
+    }
+
+    public List<Slot> getPastSlots(User owner) {
+        return slotRepository.findByOwnerAndDateLessThan(owner, LocalDate.now());
+    }
+
 }

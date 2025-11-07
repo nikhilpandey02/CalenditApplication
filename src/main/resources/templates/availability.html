@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Availability - Calendit</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #22223b;
+        }
+
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 1px 8px rgba(80,80,116,0.05);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            gap: 8px;
+            color: #525ddc;
+        }
+
+        .logo-icon {
+            background: #525ddc;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .btn-primary {
+            background: #525ddc;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover {
+            background: #3035b7;
+        }
+        .btn-secondary {
+            background: #f3f4fc;
+            color: #525ddc;
+            border: 1px solid #dbeafe;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background: #fa1e4e;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background 0.1s;
+        }
+        .btn-danger:hover {
+            background: #ce0037;
+        }
+
+        .btn-small {
+            font-size: 0.9rem;
+            padding: 0.4rem 1.1rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(33,37,41,0.06);
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 6px rgba(90,99,120,0.06);
+            margin-bottom: 2rem;
+        }
+
+        .empty-state {
+            color: #7a7a9d;
+            font-style: italic;
+            padding: 1.5rem 0;
+        }
+
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .availability-card {
+            background: #f8f8fc;
+            border-radius: 12px;
+            box-shadow: 0 1px 8px rgba(80,80,116,0.08);
+            padding: 1.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ececfb;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        .availability-card:hover {
+            border: 1.5px solid #525ddc;
+            box-shadow: 0 2px 20px rgba(73, 91, 160, 0.18);
+        }
+        .day-name {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #44446c;
+            margin-bottom: 0.5rem;
+        }
+        .time-range {
+            color: #4c4c75;
+            font-size: 1.02rem;
+            letter-spacing: 0.03em;
+        }
+        .actions button {
+            margin-left: 0.7rem;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(50,52,95, 0.23);
+            z-index: 520;
+        }
+
+        .sidebar-panel {
+            display: none;
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 390px;
+            background: #fff;
+            box-shadow: -4px 0 32px rgba(67,79,148,0.14);
+            z-index: 530;
+            padding: 2rem 1.5rem;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            animation: slideIn 0.23s;
+        }
+
+        @keyframes slideIn {
+            from { right: -400px; opacity: 0; }
+            to   { right: 0; opacity: 1; }
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-panel-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #d73b5c;
+            cursor: pointer;
+        }
+        .panel-content {
+            margin: 1.3rem 0 1.6rem 0;
+        }
+        .panel-section {
+            margin-bottom: 1.1rem;
+        }
+        .panel-section label {
+            font-weight: 500;
+            color: #383a59;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #dbeafe;
+            border-radius: 7px;
+            font-size: 1.04rem;
+            background: #f6f8fa;
+            margin-top: 0.2rem;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #525ddc;
+        }
+        .panel-footer {
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 0.7rem !important;
+            }
+            .sidebar-panel {
+                width: 95vw;
+                border-radius: 0 !important;
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-left">
+        <div class="logo">
+            <div class="logo-icon">C</div>
+            Calendit
+        </div>
+    </div>
+    <div class="navbar-right">
+        <a th:href="@{/dashboard}" class="btn-secondary">Back to Dashboard</a>
+    </div>
+</nav>
+
+<div class="container" style="max-width: 1000px; margin: 2rem auto; padding: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 2rem;">Availability</h1>
+        <button class="btn-primary" onclick="openAvailabilityForm()">➕ Add Availability</button>
+    </div>
+
+    <!-- Availability List -->
+    <div th:if="${#lists.isEmpty(schedules)}" class="card">
+        <p class="empty-state">No availability set. Add your available hours!</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(schedules)}" class="availability-grid">
+        <div th:each="schedule : ${schedules}" class="availability-card">
+            <div>
+                <div class="day-name" th:text="${schedule.dayOfWeek}">Monday</div>
+                <div class="time-range">
+                    <span th:text="${#temporals.format(schedule.startTime, 'hh:mm a')}"></span>
+                    -
+                    <span th:text="${#temporals.format(schedule.endTime, 'hh:mm a')}"></span>
+                </div>
+            </div>
+            <div class="actions">
+                <form th:action="@{/availability/toggle/{id}(id=${schedule.id})}" method="post" style="display: inline;">
+                    <button type="submit" th:class="${schedule.enabled} ? 'btn-secondary btn-small' : 'btn-primary btn-small'">
+                        <span th:text="${schedule.enabled} ? 'Disable' : 'Enable'"></span>
+                    </button>
+                </form>
+                <form th:action="@{/availability/delete/{id}(id=${schedule.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-danger btn-small" onclick="return confirm('Delete this availability?')">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Availability Form Overlay -->
+<div class="overlay" id="availabilityOverlay" onclick="closeAvailabilityForm()" style="display: none;"></div>
+<div class="sidebar-panel" id="availabilityPanel" style="display: none;">
+    <div class="panel-header">
+        <h2>Add Availability</h2>
+        <button class="close-panel-btn" onclick="closeAvailabilityForm()">✕</button>
+    </div>
+
+    <form th:action="@{/availability/add}" method="post">
+        <div class="panel-content">
+            <div class="panel-section">
+                <label for="dayOfWeek">Day of Week</label>
+                <select id="dayOfWeek" name="dayOfWeek" required class="form-input">
+                    <option value="">Select day</option>
+                    <option value="MONDAY">Monday</option>
+                    <option value="TUESDAY">Tuesday</option>
+                    <option value="WEDNESDAY">Wednesday</option>
+                    <option value="THURSDAY">Thursday</option>
+                    <option value="FRIDAY">Friday</option>
+                    <option value="SATURDAY">Saturday</option>
+                    <option value="SUNDAY">Sunday</option>
+                </select>
+            </div>
+
+            <div class="panel-section">
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" name="startTime" required class="form-input">
+            </div>
+
+            <div class="panel-section">
+                <label for="endTime">End Time</label>
+                <input type="time" id="endTime" name="endTime" required class="form-input">
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" class="btn-primary">Add Availability</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function openAvailabilityForm() {
+        document.getElementById('availabilityPanel').style.display = 'block';
+        document.getElementById('availabilityOverlay').style.display = 'block';
+    }
+
+    function closeAvailabilityForm() {
+        document.getElementById('availabilityPanel').style.display = 'none';
+        document.getElementById('availabilityOverlay').style.display = 'none';
+    }
+</script>
+</body>
+</html>

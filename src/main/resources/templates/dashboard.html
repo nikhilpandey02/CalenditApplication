@@ -737,16 +737,22 @@
 
         <ul class="sidebar-menu">
             <li class="sidebar-item active">
-                <span class="sidebar-item-icon">🔗</span>
-                Scheduling
+                <a th:href="@{/dashboard}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🔗</span>
+                    Scheduling
+                </a>
             </li>
             <li class="sidebar-item">
-                <span class="sidebar-item-icon">📅</span>
-                Meetings
+                <a th:href="@{/meetings}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">📅</span>
+                    Meetings
+                </a>
             </li>
             <li class="sidebar-item">
-                <span class="sidebar-item-icon">🕐</span>
-                Availability
+                <a th:href="@{/availability}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🕐</span>
+                    Availability
+                </a>
             </li>
             <li class="sidebar-item">
                 <span class="sidebar-item-icon">👥</span>
@@ -757,14 +763,17 @@
                 Workflows
             </li>
             <li class="sidebar-item">
-                <span class="sidebar-item-icon">🔌</span>
-                Integrations & apps
+                <a th:href="@{/integrations}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🔌</span>
+                    Integrations & apps
+                </a>
             </li>
             <li class="sidebar-item">
                 <span class="sidebar-item-icon">🔀</span>
                 Routing
             </li>
         </ul>
+
 
         <div class="sidebar-divider"></div>
 
