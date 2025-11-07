@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-left">
+        <button class="collapse-btn" onclick="toggleSidebar()">☰</button>
+        <div class="logo">
+            <div class="logo-icon">C</div>
+            Calendly
+        </div>
+    </div>
+    <div class="navbar-right">
+        <!-- If user is logged in -->
+        <div sec:authorize="isAuthenticated()">
+            <div class="dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown()">
+                    <img th:src="${picture}" alt="Profile" class="profile-pic">
+                </button>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <p class="user-name" th:text="${name}">User</p>
+                    <a th:href="@{/profile}" class="dropdown-item">Profile</a>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <button type="submit" class="dropdown-item logout-btn">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- If user is NOT logged in -->
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="btn-primary" style="text-decoration: none;">Login</a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
