@@ -23,36 +23,42 @@ import java.util.Optional;
 @RequestMapping("/availability")
 @RequiredArgsConstructor
 public class AvailabilityController {
-    
+
     private final AvailabilityService availabilityService;
     private final UserService userService;
-    
+
     @GetMapping
     public String availability(@AuthenticationPrincipal Object principal, Model model) {
         String email = null;
+        String name = null;
+        String picture = null;
         User user = null;
-        
+
         if (principal instanceof OAuth2User oAuth2User) {
             email = oAuth2User.getAttribute("email");
+            name = oAuth2User.getAttribute("name");
+            picture = oAuth2User.getAttribute("picture");
         } else if (principal instanceof UserDetails userDetails) {
             email = userDetails.getUsername();
         }
-        
+
         if (email != null) {
             Optional<User> userOpt = userService.findByEmail(email);
             if (userOpt.isPresent()) {
                 user = userOpt.get();
                 List<AvailabilitySchedule> schedules = availabilityService.getAvailabilityByOwner(user);
-                
+
                 model.addAttribute("schedules", schedules);
                 model.addAttribute("user", user);
+                model.addAttribute("name", name);
+                model.addAttribute("picture", picture);
                 model.addAttribute("daysOfWeek", DayOfWeek.values());
             }
         }
-        
+
         return "availability";
     }
-    
+
     @PostMapping("/add")
     public String addAvailability(@AuthenticationPrincipal Object principal,
                                   @RequestParam String dayOfWeek,
@@ -60,36 +66,42 @@ public class AvailabilityController {
                                   @RequestParam @DateTimeFormat(pattern = "HH:mm") LocalTime endTime,
                                   RedirectAttributes redirectAttributes) {
         String email = null;
-        
+
         if (principal instanceof OAuth2User oAuth2User) {
             email = oAuth2User.getAttribute("email");
         } else if (principal instanceof UserDetails userDetails) {
             email = userDetails.getUsername();
         }
-        
+
+        // Validate end time > start time
+        if (endTime.isBefore(startTime) || endTime.equals(startTime)) {
+            redirectAttributes.addFlashAttribute("error", "End time must be after start time!");
+            return "redirect:/availability";
+        }
+
         if (email != null) {
             Optional<User> userOpt = userService.findByEmail(email);
             if (userOpt.isPresent()) {
                 availabilityService.createAvailability(
-                    userOpt.get(),
-                    DayOfWeek.valueOf(dayOfWeek.toUpperCase()),
-                    startTime,
-                    endTime
+                        userOpt.get(),
+                        DayOfWeek.valueOf(dayOfWeek.toUpperCase()),
+                        startTime,
+                        endTime
                 );
                 redirectAttributes.addFlashAttribute("success", "Availability added successfully!");
             }
         }
-        
+
         return "redirect:/availability";
     }
-    
+
     @PostMapping("/delete/{id}")
     public String deleteAvailability(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         availabilityService.deleteAvailability(id);
         redirectAttributes.addFlashAttribute("success", "Availability deleted!");
         return "redirect:/availability";
     }
-    
+
     @PostMapping("/toggle/{id}")
     public String toggleAvailability(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         availabilityService.toggleAvailability(id);
