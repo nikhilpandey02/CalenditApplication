@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,19 +48,29 @@ public class MeetingsController {
             Optional<User> userOpt = userService.findByEmail(email);
             if (userOpt.isPresent()) {
                 user = userOpt.get();
+                LocalDateTime now = LocalDateTime.now();
+
+                List<Slot> allBookedSlots = slotService.getAllSlotsByOwner(user)
+                        .stream()
+                        .filter(slot -> !slot.isAvailable() && slot.getBooking() != null)
+                        .collect(Collectors.toList());
 
                 List<Slot> slots;
                 if ("past".equals(tab)) {
-                    // Show only BOOKED past meetings
-                    slots = slotService.getPastSlots(user)
-                            .stream()
-                            .filter(slot -> !slot.isAvailable() && slot.getBooking() != null)
+                    slots = allBookedSlots.stream()
+                            .filter(slot -> {
+                                LocalDateTime meetingEnd = LocalDateTime.of(slot.getDate(),
+                                        slot.getTime().plusMinutes(slot.getDurationMinutes()));
+                                return meetingEnd.isBefore(now);
+                            })
                             .collect(Collectors.toList());
                 } else {
-                    // Show only BOOKED upcoming meetings
-                    slots = slotService.getUpcomingSlots(user)
-                            .stream()
-                            .filter(slot -> !slot.isAvailable() && slot.getBooking() != null)
+                    slots = allBookedSlots.stream()
+                            .filter(slot -> {
+                                LocalDateTime meetingEnd = LocalDateTime.of(slot.getDate(),
+                                        slot.getTime().plusMinutes(slot.getDurationMinutes()));
+                                return !meetingEnd.isBefore(now);
+                            })
                             .collect(Collectors.toList());
                 }
 
