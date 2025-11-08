@@ -1,441 +1,223 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Availability - Calendit</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #22223b;
         }
 
         .navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 12px 20px;
+            background: #ffffff;
+            box-shadow: 0 1px 8px rgba(80,80,116,0.05);
+            padding: 1rem 2rem;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 60px;
-        }
-
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
         }
 
         .logo {
             display: flex;
             align-items: center;
+            font-size: 1.4rem;
+            font-weight: bold;
             gap: 8px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #0066ff;
+            color: #525ddc;
         }
 
         .logo-icon {
+            background: #525ddc;
+            color: white;
+            border-radius: 50%;
             width: 32px;
             height: 32px;
-            background: #0066ff;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 18px;
+            font-size: 1.2rem;
         }
 
-        .collapse-btn {
-            background: none;
+        .btn-primary {
+            background: #525ddc;
+            color: #fff;
             border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-            color: #6b7280;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .profile-pic {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            object-fit: cover;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            min-width: 200px;
-            z-index: 1000;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .user-name {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 600;
-            color: #111827;
-        }
-
-        .dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            text-align: left;
-            background: none;
-            border: none;
-            color: #374151;
             cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
+            transition: background 0.2s;
         }
-
-        .dropdown-item:hover {
-            background: #f9fafb;
+        .btn-primary:hover {
+            background: #3035b7;
         }
-
-        .layout {
-            display: flex;
-            margin-top: 60px;
-            height: calc(100vh - 60px);
-        }
-
-        .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e7eb;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
-
-        .sidebar.collapsed {
-            margin-left: -240px;
-        }
-
-        .create-btn {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 50px;
-            padding: 10px 20px;
-            margin: 0 16px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 15px;
+        .btn-secondary {
+            background: #f3f4fc;
+            color: #525ddc;
+            border: 1px solid #dbeafe;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 500;
-            color: #0066ff;
-        }
-
-        .create-btn:hover {
-            background: #f9fafb;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-item {
-            padding: 10px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #6b7280;
             cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
+        }
+        .btn-danger {
+            background: #fa1e4e;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background 0.1s;
+        }
+        .btn-danger:hover {
+            background: #ce0037;
         }
 
-        .sidebar-item:hover {
-            background: #f9fafb;
-            color: #111827;
+        .btn-small {
+            font-size: 0.9rem;
+            padding: 0.4rem 1.1rem;
         }
 
-        .sidebar-item.active {
-            color: #0066ff;
-            background: #eff6ff;
-            border-left: 3px solid #0066ff;
-        }
-
-        .sidebar-item a {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-item-icon {
-            font-size: 18px;
-        }
-
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 32px 40px;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .content-header h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .card-section {
+        .container {
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(33,37,41,0.06);
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 6px rgba(90,99,120,0.06);
+            margin-bottom: 2rem;
+        }
+
+        .empty-state {
+            color: #7a7a9d;
+            font-style: italic;
+            padding: 1.5rem 0;
         }
 
         .availability-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
-
         .availability-card {
-            background: white;
-            padding: 18px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            background: #f8f8fc;
+            border-radius: 12px;
+            box-shadow: 0 1px 8px rgba(80,80,116,0.08);
+            padding: 1.8rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
+            border: 1px solid #ececfb;
+            transition: box-shadow 0.2s, border 0.2s;
         }
-
         .availability-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1.5px solid #525ddc;
+            box-shadow: 0 2px 20px rgba(73, 91, 160, 0.18);
         }
-
         .day-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: #111827;
-            margin-bottom: 4px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #44446c;
+            margin-bottom: 0.5rem;
         }
-
         .time-range {
-            color: #6b7280;
-            font-size: 14px;
+            color: #4c4c75;
+            font-size: 1.02rem;
+            letter-spacing: 0.03em;
         }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-toggle {
-            background: #f3f4f6;
-            color: #0066ff;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .btn-toggle:hover {
-            background: #e5e7eb;
-        }
-
-        .btn-toggle.disabled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #6b7280;
-            padding: 40px 20px;
-            background: #f9fafb;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
-
-        .alert-danger {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+        .actions button {
+            margin-left: 0.7rem;
         }
 
         .overlay {
             display: none;
             position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 80;
-        }
-
-        .overlay.show {
-            display: block;
+            inset: 0;
+            background: rgba(50,52,95, 0.23);
+            z-index: 520;
         }
 
         .sidebar-panel {
+            display: none;
             position: fixed;
-            right: -500px;
-            top: 60px;
-            width: 480px;
-            height: calc(100vh - 60px);
-            background: white;
-            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
-            transition: right 0.3s;
-            z-index: 90;
-            overflow-y: auto;
-        }
-
-        .sidebar-panel.open {
             right: 0;
+            top: 0;
+            height: 100vh;
+            width: 390px;
+            background: #fff;
+            box-shadow: -4px 0 32px rgba(67,79,148,0.14);
+            z-index: 530;
+            padding: 2rem 1.5rem;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            animation: slideIn 0.23s;
         }
 
+        @keyframes slideIn {
+            from { right: -400px; opacity: 0; }
+            to   { right: 0; opacity: 1; }
+        }
         .panel-header {
-            padding: 24px;
-            border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .close-panel-btn {
-            background: none;
+            background: transparent;
             border: none;
-            font-size: 24px;
+            font-size: 1.5rem;
+            color: #d73b5c;
             cursor: pointer;
-            color: #6b7280;
         }
-
         .panel-content {
-            padding: 24px;
+            margin: 1.3rem 0 1.6rem 0;
         }
-
         .panel-section {
-            margin-bottom: 20px;
+            margin-bottom: 1.1rem;
         }
-
-        .panel-section-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
+        .panel-section label {
+            font-weight: 500;
+            color: #383a59;
+            margin-bottom: 0.2rem;
+            display: block;
         }
-
         .form-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
+            padding: 0.7rem 1rem;
+            border: 1px solid #dbeafe;
+            border-radius: 7px;
+            font-size: 1.04rem;
+            background: #f6f8fa;
+            margin-top: 0.2rem;
         }
-
         .form-input:focus {
             outline: none;
-            border-color: #0066ff;
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+            border-color: #525ddc;
         }
-
         .panel-footer {
-            padding: 20px 24px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
+            margin-top: 2rem;
         }
 
-        .btn-primary {
-            background: #0066ff;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 24px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background: #0052cc;
+        @media (max-width: 700px) {
+            .container {
+                padding: 0.7rem !important;
+            }
+            .sidebar-panel {
+                width: 95vw;
+                border-radius: 0 !important;
+                padding: 1.5rem 1rem;
+            }
         }
         /* Layout for Navbar + Sidebar + Main content */
 .layout {
@@ -470,120 +252,6 @@
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
 <body>
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="navbar-left">
-        <button class="collapse-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
-        </div>
-    </div>
-    <div class="navbar-right">
-        <div sec:authorize="isAuthenticated()">
-            <div class="dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown()">
-                    <img th:src="${picture}" alt="Profile" class="profile-pic">
-                </button>
-                <div id="dropdownMenu" class="dropdown-menu">
-                    <p class="user-name" th:text="${name}">User</p>
-                    <form th:action="@{/logout}" method="post" style="margin: 0;">
-                        <button type="submit" class="dropdown-item logout-btn">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- Layout -->
-<div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <button class="create-btn" onclick="openAvailabilityForm()">
-            ➕ Add Availability
-        </button>
-
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a th:href="@{/dashboard}">
-                    <span class="sidebar-item-icon">🔗</span>
-                    Scheduling
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/meetings}">
-                    <span class="sidebar-item-icon">📅</span>
-                    Meetings
-                </a>
-            </li>
-            <li class="sidebar-item active">
-                <a th:href="@{/availability}">
-                    <span class="sidebar-item-icon">🕐</span>
-                    Availability
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">👥</span>
-                Contacts
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">⚙️</span>
-                Workflows
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/integrations}">
-                    <span class="sidebar-item-icon">🔌</span>
-                    Integrations & apps
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="content-header">
-            <h1>Availability</h1>
-        </div>
-
-        <!-- Success/Error Messages -->
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-        <!-- Availability List -->
-        <div class="card-section">
-            <div th:if="${#lists.isEmpty(schedules)}">
-                <p class="empty-state">No availability set. Add your available hours to help others schedule with you!</p>
-            </div>
-
-            <div th:if="${!#lists.isEmpty(schedules)}" class="availability-grid">
-                <div th:each="schedule : ${schedules}" class="availability-card">
-                    <div>
-                        <div class="day-name" th:text="${schedule.dayOfWeek}">Monday</div>
-                        <div class="time-range">
-                            <span th:text="${#temporals.format(schedule.startTime, 'hh:mm a')}"></span>
-                            -
-                            <span th:text="${#temporals.format(schedule.endTime, 'hh:mm a')}"></span>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <form th:action="@{/availability/toggle/{id}(id=${schedule.id})}" method="post" style="display: inline;">
-                            <button type="submit" th:class="${schedule.enabled} ? 'btn-toggle' : 'btn-toggle disabled'">
-                                <span th:text="${schedule.enabled} ? '✓ Enabled' : '✗ Disabled'"></span>
-                            </button>
-                        </form>
-                        <form th:action="@{/availability/delete/{id}(id=${schedule.id})}" method="post" style="display: inline;">
-                            <button type="submit" class="btn-danger" onclick="return confirm('Delete this availability?')">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<!-- Add Availability Form Overlay -->
-<div class="overlay" id="availabilityOverlay" onclick="closeAvailabilityForm()"></div>
 <!-- 🔹 Navbar Fragment -->
 <div th:replace="fragments/navbar :: navbar"></div>
 
@@ -645,10 +313,10 @@
         <button class="close-panel-btn" onclick="closeAvailabilityForm()">✕</button>
     </div>
 
-    <form th:action="@{/availability/add}" method="post" id="availabilityForm">
+    <form th:action="@{/availability/add}" method="post">
         <div class="panel-content">
             <div class="panel-section">
-                <label for="dayOfWeek" class="panel-section-label">Day of Week</label>
+                <label for="dayOfWeek">Day of Week</label>
                 <select id="dayOfWeek" name="dayOfWeek" required class="form-input">
                     <option value="">Select day</option>
                     <option value="MONDAY">Monday</option>
@@ -662,61 +330,21 @@
             </div>
 
             <div class="panel-section">
-                <label for="startTime" class="panel-section-label">Start Time</label>
+                <label for="startTime">Start Time</label>
                 <input type="time" id="startTime" name="startTime" required class="form-input">
             </div>
 
             <div class="panel-section">
-                <label for="endTime" class="panel-section-label">End Time</label>
+                <label for="endTime">End Time</label>
                 <input type="time" id="endTime" name="endTime" required class="form-input">
-                <small style="color: #6b7280; margin-top: 4px; display: block;">Must be after start time</small>
             </div>
         </div>
 
         <div class="panel-footer">
-            <button type="button" class="btn-secondary" onclick="closeAvailabilityForm()">Cancel</button>
             <button type="submit" class="btn-primary">Add Availability</button>
         </div>
     </form>
 </div>
-
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-    }
-
-    function openAvailabilityForm() {
-        document.getElementById('availabilityPanel').classList.add('open');
-        document.getElementById('availabilityOverlay').classList.add('show');
-    }
-
-    function closeAvailabilityForm() {
-        document.getElementById('availabilityPanel').classList.remove('open');
-        document.getElementById('availabilityOverlay').classList.remove('show');
-    }
-
-    function toggleDropdown() {
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        dropdownMenu.classList.toggle('show');
-    }
-
-    window.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-        }
-    });
-
-    // Validate end time > start time
-    document.getElementById('availabilityForm').addEventListener('submit', function(e) {
-        const startTime = document.getElementById('startTime').value;
-        const endTime = document.getElementById('endTime').value;
-
-        if (endTime <= startTime) {
-            e.preventDefault();
-            alert('End time must be after start time!');
-        }
-    });
-</script>
 <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

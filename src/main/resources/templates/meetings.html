@@ -1,161 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meetings - Calendit</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 60px;
-        }
-
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #0066ff;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #0066ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-
-        .collapse-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-            color: #6b7280;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .profile-pic {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            object-fit: cover;
-        }
-
-        /* Dropdown */
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            min-width: 200px;
-            z-index: 1000;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .user-name {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e5e7eb;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            text-align: left;
-            background: none;
-            border: none;
-            color: #374151;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .dropdown-item:hover {
-            background: #f9fafb;
-        }
-
-        .logout-btn {
-            color: #dc2626;
-        }
-
-        /* Layout */
-        .layout {
-            display: flex;
-            margin-top: 60px;
-            height: calc(100vh - 60px);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e7eb;
-            padding: 20px 0;
-            overflow-y: auto;
-            transition: margin-left 0.3s;
-        }
 
     <!-- Global and shared styles -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -208,127 +55,21 @@
             padding: 2rem;
         }
 
-        .sidebar.collapsed {
-            margin-left: -240px;
-        }
-
-        .create-btn {
+        .card {
             background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 50px;
-            padding: 10px 20px;
-            margin: 0 16px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #0066ff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 6px rgba(90,99,120,0.06);
+            margin-bottom: 2rem;
         }
 
-        .create-btn:hover {
-            background: #f9fafb;
-        }
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-item {
-            padding: 10px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
+        .empty-state {
+            color: #888eaa;
+            font-style: italic;
+            padding: 2.2rem 0;
+            text-align: center;
         }
 
-        .sidebar-item:hover {
-            background: #f9fafb;
-            color: #111827;
-        }
-
-        .sidebar-item.active {
-            color: #0066ff;
-            background: #eff6ff;
-            border-left: 3px solid #0066ff;
-        }
-
-        .sidebar-item a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .sidebar-item-icon {
-            font-size: 18px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 32px 40px;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .content-header h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 32px;
-            border-bottom: 2px solid #e5e7eb;
-            margin-bottom: 24px;
-        }
-
-        .tab {
-            padding: 12px 0;
-            font-size: 15px;
-            color: #6b7280;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .tab.active {
-            color: #111827;
-            border-bottom-color: #0066ff;
-            font-weight: 500;
-        }
-
-        .tab:hover {
-            color: #111827;
-        }
-
-        /* Card Section */
-        .card-section {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        /* Table */
-        .slot-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
         /* Meetings table */
         .slot-table {
             width: 100%;
@@ -348,23 +89,12 @@
         }
 
         .slot-table th {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 2px solid #e5e7eb;
-            font-weight: 600;
-            color: #374151;
-            font-size: 14px;
-        }
-        .slot-table td {
-            padding: 12px;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 14px;
+            font-weight: 700;
+            color: #26267f;
+            font-size: 1.04rem;
+            background: #f5f6fb;
         }
 
-        .slot-table tr:hover {
-            background: #f9fafb;
-
-         }
         .slot-table tr:last-child td {
             border-bottom: none;
         }
@@ -376,49 +106,36 @@
         /* Badges */
         .badge {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+            padding: 0.45em 1.1em;
+            border-radius: 1.2em;
+            font-size: 0.93rem;
+            font-weight: 600;
+            margin-right: 3px;
         }
 
         .badge-success {
-            background: #d1fae5;
-            color: #065f46;
+            background-color: #eafbe6;
+            color: #1a9a46;
+            border: 1px solid #3ee98b20;
         }
 
         .badge-booked {
-            background: #fee2e2;
-            color: #991b1b;
+            background-color: #faebee;
+            color: #e22255;
+            border: 1px solid #f17a8c12;
         }
 
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-         }
         /* Buttons */
         .btn-danger,
         .btn-small {
             background: #fa1e4e;
             color: #fff;
             border: none;
-            border-radius: 6px;
-            padding: 6px 14px;
-            font-size: 13px;
+            padding: 0.45rem 1.1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #6b7280;
-            padding: 40px 20px;
-            background: #f9fafb;
-            border-radius: 8px;
-            font-size: 14px;
             transition: background 0.13s;
             margin-right: 5px;
         }
@@ -438,39 +155,20 @@
             margin-bottom: 2rem;
         }
 
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .tab {
+            border-radius: 8px 8px 0 0;
+            background: #f7f8fa;
+            border-bottom: 3px solid transparent;
+            padding: 0.85rem 2.2rem;
+            font-size: 1.07rem;
+            font-weight: 600;
+            color: #7a7a9d;
+            cursor: pointer;
+            margin-bottom: -2px;
+            text-decoration: none;
+            transition: border-color 0.2s, color 0.2s;
         }
 
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
-
-        .alert-danger {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        /* Overlay */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 80;
-        }
-
-        .overlay.show {
-            display: block;
-        }
         .tab.active {
             color: #667eea !important;
             background: #fff;
@@ -507,137 +205,6 @@
 
 <body>
 <!-- Navbar -->
-<nav class="navbar">
-    <div class="navbar-left">
-        <button class="collapse-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
-        </div>
-    </div>
-    <div class="navbar-right">
-        <div sec:authorize="isAuthenticated()">
-            <div class="dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown()">
-                    <img th:src="${picture}" alt="Profile" class="profile-pic">
-                </button>
-                <div id="dropdownMenu" class="dropdown-menu">
-                    <p class="user-name" th:text="${name}">User</p>
-                    <form th:action="@{/logout}" method="post" style="margin: 0;">
-                        <button type="submit" class="dropdown-item logout-btn">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- Layout -->
-<div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <button class="create-btn" onclick="window.location.href='/dashboard'">
-            ➕ Create
-        </button>
-
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a th:href="@{/dashboard}" style="display: flex; align-items: center; gap: 12px;">
-                    <span class="sidebar-item-icon">🔗</span>
-                    Scheduling
-                </a>
-            </li>
-            <li class="sidebar-item active">
-                <a th:href="@{/meetings}" style="display: flex; align-items: center; gap: 12px;">
-                    <span class="sidebar-item-icon">📅</span>
-                    Meetings
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/availability}" style="display: flex; align-items: center; gap: 12px;">
-                    <span class="sidebar-item-icon">🕐</span>
-                    Availability
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">👥</span>
-                Contacts
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">⚙️</span>
-                Workflows
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/integrations}" style="display: flex; align-items: center; gap: 12px;">
-                    <span class="sidebar-item-icon">🔌</span>
-                    Integrations & apps
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="content-header">
-            <h1>Meetings</h1>
-        </div>
-
-        <!-- Success/Error Messages -->
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <a th:href="@{/meetings?tab=upcoming}"
-               th:class="${activeTab == 'upcoming'} ? 'tab active' : 'tab'">
-                📅 Upcoming
-            </a>
-            <a th:href="@{/meetings?tab=past}"
-               th:class="${activeTab == 'past'} ? 'tab active' : 'tab'">
-                ⏱️ Past
-            </a>
-        </div>
-
-        <!-- Meetings List -->
-        <div class="card-section">
-            <div th:if="${#lists.isEmpty(slots)}">
-                <p class="empty-state">No meetings found.</p>
-            </div>
-
-            <table th:if="${!#lists.isEmpty(slots)}" class="slot-table">
-                <thead>
-                <tr>
-                    <th>Meeting Name</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                    <th>Booked By</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="slot : ${slots}">
-                    <td th:text="${slot.meetingName}"></td>
-                    <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>
-                    <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
-                    <td th:text="${slot.durationMinutes + ' min'}"></td>
-                    <td>
-                        <span th:if="${!slot.available && slot.booking != null}" class="badge badge-booked">Booked</span>
-                    </td>
-                    <td th:text="${!slot.available && slot.booking != null} ? ${slot.booking.bookedBy.name} : '-'"></td>
-                    <td>
-                        <form th:action="@{/slots/remove}" method="post" style="display: inline;">
-                            <input type="hidden" name="slotId" th:value="${slot.id}">
-                            <button type="submit" class="btn-danger" onclick="return confirm('Delete this meeting?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-</div>
 <div th:replace="fragments/navbar :: navbar"></div>
 
 <!-- Sidebar + Main Layout -->
