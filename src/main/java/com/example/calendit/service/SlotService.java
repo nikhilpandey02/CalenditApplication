@@ -30,11 +30,12 @@ public class SlotService {
         slot.setAvailable(true);
         slotRepository.save(slot);
     }
-    
+
     public List<Slot> getAvailableSlots(User owner) {
-        return slotRepository.findByOwnerAndDateAfterAndAvailableTrue(owner, LocalDate.now());
+        return slotRepository.findByOwnerAndDateGreaterThanEqualAndAvailableTrue(owner, LocalDate.now());
     }
-    
+
+
     public List<Slot> getAllSlotsByOwner(User owner) {
         return slotRepository.findByOwner(owner);
     }
