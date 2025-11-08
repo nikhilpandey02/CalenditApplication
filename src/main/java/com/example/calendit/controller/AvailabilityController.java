@@ -53,6 +53,8 @@ public class AvailabilityController {
                 model.addAttribute("name", name);
                 model.addAttribute("picture", picture);
                 model.addAttribute("daysOfWeek", DayOfWeek.values());
+                model.addAttribute("picture",user.getPicture());
+                model.addAttribute("name",user.getName());
             }
         }
 

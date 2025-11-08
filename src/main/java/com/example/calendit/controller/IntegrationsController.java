@@ -40,6 +40,8 @@ public class IntegrationsController {
                 // Check if Google is connected
                 boolean googleConnected = user.getProvider().equals("GOOGLE");
                 model.addAttribute("googleConnected", googleConnected);
+                model.addAttribute("picture",user.getPicture());
+                model.addAttribute("name",user.getName());
             }
         }
         

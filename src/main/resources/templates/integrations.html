@@ -1,282 +1,140 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Integrations - Calendit</title>
+
+    <!-- Global & Shared Styles -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Page background and typography */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            background: #f7f8fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #22223b;
+            margin: 0;
         }
 
-        .navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 60px;
-        }
-
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #0066ff;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #0066ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-
-        .collapse-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-            color: #6b7280;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .profile-pic {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            object-fit: cover;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            min-width: 200px;
-            z-index: 1000;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .user-name {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e5e7eb;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            text-align: left;
-            background: none;
-            border: none;
-            color: #374151;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .dropdown-item:hover {
-            background: #f9fafb;
-        }
-
+        /* Layout for Navbar + Sidebar + Main content */
         .layout {
             display: flex;
-            margin-top: 60px;
-            height: calc(100vh - 60px);
+            margin-top: 60px; /* height of navbar */
+            min-height: calc(100vh - 60px);
         }
 
+        /* Sidebar */
         .sidebar {
             width: 240px;
-            background: #fff;
+            background: #ffffff;
             border-right: 1px solid #e5e7eb;
-            padding: 20px 0;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            height: calc(100vh - 60px);
             overflow-y: auto;
         }
 
-        .sidebar.collapsed {
-            margin-left: -240px;
-        }
-
-        .create-btn {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 50px;
-            padding: 10px 20px;
-            margin: 0 16px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #0066ff;
-        }
-
-        .create-btn:hover {
-            background: #f9fafb;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-item {
-            padding: 10px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
-        .sidebar-item:hover {
-            background: #f9fafb;
-            color: #111827;
-        }
-
-        .sidebar-item.active {
-            color: #0066ff;
-            background: #eff6ff;
-            border-left: 3px solid #0066ff;
-        }
-
-        .sidebar-item a {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-item-icon {
-            font-size: 18px;
-        }
-
+        /* Main Content */
         .main-content {
             flex: 1;
+            margin-left: 240px; /* same as sidebar width */
+            padding: 2rem;
+            background: #f7f8fa;
             overflow-y: auto;
-            padding: 32px 40px;
         }
 
-        .content-header {
-            margin-bottom: 24px;
+        /* Page container */
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(33,37,41,0.07);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .content-header h1 {
-            font-size: 28px;
+        /* Buttons */
+        .btn-primary {
+            background: #525ddc;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.22s;
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background: #363db7;
         }
 
-        .content-description {
-            color: #6b7280;
-            font-size: 15px;
+        .btn-secondary {
+            background: #f3f4fc;
+            color: #476cf2;
+            border: 1px solid #dbeafe;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
         }
 
+        /* Integrations Grid */
         .integration-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2.3rem;
         }
 
         .integration-card {
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 24px;
+            padding: 2.2rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             text-align: center;
-            transition: all 0.2s;
+            border: 1px solid #ececfb;
+            transition: transform 0.14s, box-shadow 0.16s;
         }
-
         .integration-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border-color: #d1d5db;
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 22px rgba(122,130,195,0.14);
         }
 
         .integration-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
         }
 
         .integration-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #22223b;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
         }
 
         .integration-desc {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 16px;
+            color: #66669f;
+            margin-bottom: 1.3rem;
+            font-size: 1.05rem;
         }
 
+        /* Status badges */
         .status-badge {
             display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            padding: 0.35rem 0.85rem;
+            border-radius: 1rem;
+            font-size: 0.87rem;
+            font-weight: 700;
+            margin-top: 0.4rem;
         }
 
         .status-connected {
@@ -289,183 +147,106 @@
             color: #991b1b;
         }
 
-        .status-coming {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .btn-connect {
-            background: #0066ff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 12px;
-        }
-
-        .btn-connect:hover {
-            background: #0052cc;
-        }
-
-        .status-info {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #6b7280;
+        @media (max-width: 700px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .sidebar {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="navbar-left">
-        <button class="collapse-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
-        </div>
-    </div>
-    <div class="navbar-right">
-        <div sec:authorize="isAuthenticated()">
-            <div class="dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown()">
-                    <img th:src="${picture}" alt="Profile" class="profile-pic">
-                </button>
-                <div id="dropdownMenu" class="dropdown-menu">
-                    <p class="user-name" th:text="${name}">User</p>
-                    <form th:action="@{/logout}" method="post" style="margin: 0;">
-                        <button type="submit" class="dropdown-item logout-btn">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
+<!-- Navbar Fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
 
-<!-- Layout -->
+<!-- Sidebar + Main Layout -->
 <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <button class="create-btn" onclick="window.location.href='/dashboard'">
-            ➕ Create
-        </button>
 
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a th:href="@{/dashboard}">
-                    <span class="sidebar-item-icon">🔗</span>
-                    Scheduling
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/meetings}">
-                    <span class="sidebar-item-icon">📅</span>
-                    Meetings
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a th:href="@{/availability}">
-                    <span class="sidebar-item-icon">🕐</span>
-                    Availability
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">👥</span>
-                Contacts
-            </li>
-            <li class="sidebar-item">
-                <span class="sidebar-item-icon">⚙️</span>
-                Workflows
-            </li>
-            <li class="sidebar-item active">
-                <a th:href="@{/integrations}">
-                    <span class="sidebar-item-icon">🔌</span>
-                    Integrations & apps
-                </a>
-            </li>
-        </ul>
-    </aside>
+    <!-- Sidebar Fragment -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="content-header">
-            <h1>Integrations & Apps</h1>
-            <p class="content-description">Connect your favorite tools and services to enhance your scheduling experience</p>
-        </div>
+    <!-- Main Page Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 style="font-size: 2rem; margin-bottom: 1rem;">Integrations & Apps</h1>
+            <p style="color: #6b7280; margin-bottom: 2.2rem;">Connect your favorite tools and services</p>
 
-        <div class="integration-grid">
-            <!-- Google Meet -->
-            <div class="integration-card">
-                <div class="integration-icon">📹</div>
-                <div class="integration-title">Google Meet</div>
-                <div class="integration-desc">Automatically generate Google Meet links for your meetings</div>
+            <div class="integration-grid">
 
-                <div th:if="${googleConnected}">
-                    <span class="status-badge status-connected">✓ Connected</span>
-                    <div class="status-info">Meet links are automatically created for all bookings</div>
+                <!-- Google Meet -->
+                <div class="integration-card">
+                    <div class="integration-icon">📹</div>
+                    <div class="integration-title">Google Meet</div>
+                    <div class="integration-desc">
+                        Automatically generate Google Meet links for your meetings
+                    </div>
+                    <div th:if="${googleConnected}">
+                        <span class="status-badge status-connected">✓ Connected</span>
+                        <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                            Meet links are automatically created for all bookings
+                        </p>
+                    </div>
+                    <div th:unless="${googleConnected}">
+                        <span class="status-badge status-not-connected">Not Connected</span>
+                        <a href="/oauth2/authorization/google" class="btn-primary"
+                           style="margin-top: 1.1rem; display: inline-block;">
+                            Connect Google
+                        </a>
+                    </div>
                 </div>
-                <div th:unless="${googleConnected}">
-                    <span class="status-badge status-not-connected">Not Connected</span>
-                    <a href="/oauth2/authorization/google" class="btn-connect">Connect Google</a>
+
+                <!-- Google Calendar -->
+                <div class="integration-card">
+                    <div class="integration-icon">📅</div>
+                    <div class="integration-title">Google Calendar</div>
+                    <div class="integration-desc">Sync your availability with Google Calendar</div>
+                    <div th:if="${googleConnected}">
+                        <span class="status-badge status-connected">✓ Connected</span>
+                        <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                            Events are synced with your Google Calendar
+                        </p>
+                    </div>
+                    <div th:unless="${googleConnected}">
+                        <span class="status-badge status-not-connected">Not Connected</span>
+                        <a href="/oauth2/authorization/google" class="btn-primary"
+                           style="margin-top: 1rem; display: inline-block;">
+                            Connect Google
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Google Calendar -->
-            <div class="integration-card">
-                <div class="integration-icon">📅</div>
-                <div class="integration-title">Google Calendar</div>
-                <div class="integration-desc">Sync your availability with Google Calendar</div>
-
-                <div th:if="${googleConnected}">
-                    <span class="status-badge status-connected">✓ Connected</span>
-                    <div class="status-info">Events are synced with your Google Calendar</div>
+                <!-- Email Notifications -->
+                <div class="integration-card">
+                    <div class="integration-icon">📧</div>
+                    <div class="integration-title">Email Notifications</div>
+                    <div class="integration-desc">
+                        Automatically send email confirmations and reminders
+                    </div>
+                    <span class="status-badge status-connected">✓ Active</span>
+                    <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                        Email notifications are enabled for all bookings
+                    </p>
                 </div>
-                <div th:unless="${googleConnected}">
-                    <span class="status-badge status-not-connected">Not Connected</span>
-                    <a href="/oauth2/authorization/google" class="btn-connect">Connect Google</a>
+
+                <!-- Zoom (Future) -->
+                <div class="integration-card" style="opacity: 0.55;">
+                    <div class="integration-icon">🎥</div>
+                    <div class="integration-title">Zoom</div>
+                    <div class="integration-desc">
+                        Generate Zoom meeting links (Coming Soon)
+                    </div>
+                    <span class="status-badge status-not-connected">Coming Soon</span>
                 </div>
-            </div>
 
-            <!-- Email Notifications -->
-            <div class="integration-card">
-                <div class="integration-icon">📧</div>
-                <div class="integration-title">Email Notifications</div>
-                <div class="integration-desc">Automatically send confirmations and reminders</div>
-
-                <span class="status-badge status-connected">✓ Active</span>
-                <div class="status-info">Email notifications are enabled for all bookings</div>
-            </div>
-
-            <!-- Zoom (Future) -->
-            <div class="integration-card" style="opacity: 0.6;">
-                <div class="integration-icon">🎥</div>
-                <div class="integration-title">Zoom</div>
-                <div class="integration-desc">Generate Zoom meeting links</div>
-
-                <span class="status-badge status-coming">Coming Soon</span>
-                <div class="status-info">Zoom integration will be available soon</div>
             </div>
         </div>
-    </main>
+    </div>
 </div>
 
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-    }
-
-    function toggleDropdown() {
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        dropdownMenu.classList.toggle('show');
-    }
-
-    window.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-        }
-    });
-</script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

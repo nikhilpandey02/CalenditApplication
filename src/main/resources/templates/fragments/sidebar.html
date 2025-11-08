@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Sidebar Fragment -->
+<div th:fragment="sidebar">
+    <aside class="sidebar" id="sidebar">
+        <button class="create-btn" onclick="openCreatePanel()">
+            ➕ Create
+        </button>
+
+        <ul class="sidebar-menu">
+            <li class="sidebar-item" th:classappend="${activePage == 'dashboard'} ? ' active'">
+                <a th:href="@{/dashboard}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🔗</span>
+                    Scheduling
+                </a>
+            </li>
+            <li class="sidebar-item" th:classappend="${activePage == 'meetings'} ? ' active'">
+                <a th:href="@{/meetings}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">📅</span>
+                    Meetings
+                </a>
+            </li>
+            <li class="sidebar-item" th:classappend="${activePage == 'availability'} ? ' active'">
+                <a th:href="@{/availability}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🕐</span>
+                    Availability
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">👥</span>
+                Contacts
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">⚙️</span>
+                Workflows
+            </li>
+            <li class="sidebar-item" th:classappend="${activePage == 'integrations'} ? ' active'">
+                <a th:href="@{/integrations}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                    <span class="sidebar-item-icon">🔌</span>
+                    Integrations & apps
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">🔀</span>
+                Routing
+            </li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">💎</span>
+                Upgrade plan
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">📊</span>
+                Analytics
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">👑</span>
+                Admin center
+            </li>
+            <li class="sidebar-item">
+                <span class="sidebar-item-icon">❓</span>
+                Help
+            </li>
+        </ul>
+    </aside>
+</div>
+</body>
+</html>
