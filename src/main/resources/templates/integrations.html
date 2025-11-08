@@ -3,42 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Integrations - Calendit</title>
+
+    <!-- Global & Shared Styles -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
     <style>
+        /* Page background and typography */
         body {
             background: #f7f8fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             color: #22223b;
+            margin: 0;
         }
 
-        .navbar {
+        /* Layout for Navbar + Sidebar + Main content */
+        .layout {
+            display: flex;
+            margin-top: 60px; /* height of navbar */
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 240px; /* same as sidebar width */
+            padding: 2rem;
+            background: #f7f8fa;
+            overflow-y: auto;
+        }
+
+        /* Page container */
+        .container {
             background: #fff;
-            box-shadow: 0 1px 6px rgba(80,80,116,0.08);
-            padding: 1.1rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(33,37,41,0.07);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            gap: 8px;
-            color: #525ddc;
-        }
-
-        .logo-icon {
+        /* Buttons */
+        .btn-primary {
             background: #525ddc;
-            color: white;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.22s;
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background: #363db7;
         }
 
         .btn-secondary {
@@ -53,12 +85,7 @@
             cursor: pointer;
         }
 
-        .container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(33,37,41,0.070);
-        }
-
+        /* Integrations Grid */
         .integration-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -79,6 +106,7 @@
             transform: translateY(-3px) scale(1.03);
             box-shadow: 0 6px 22px rgba(122,130,195,0.14);
         }
+
         .integration-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
@@ -92,11 +120,14 @@
             margin-bottom: 0.5rem;
             letter-spacing: 0.01em;
         }
+
         .integration-desc {
             color: #66669f;
             margin-bottom: 1.3rem;
             font-size: 1.05rem;
         }
+
+        /* Status badges */
         .status-badge {
             display: inline-block;
             padding: 0.35rem 0.85rem;
@@ -105,112 +136,117 @@
             font-weight: 700;
             margin-top: 0.4rem;
         }
+
         .status-connected {
             background-color: #d1fae5;
             color: #065f46;
         }
+
         .status-not-connected {
             background-color: #fee2e2;
             color: #991b1b;
         }
-        .btn-primary {
-            background: #525ddc;
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.4rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 1px 4px rgba(80,80,116,0.07);
-            letter-spacing: 0.01em;
-            transition: background 0.22s;
-        }
-        .btn-primary:hover {
-            background: #363db7;
-        }
+
         @media (max-width: 700px) {
-            .container {
-                padding: 0.7rem !important;
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .sidebar {
+                display: none;
             }
         }
     </style>
 </head>
+
 <body>
-<nav class="navbar">
-    <div class="navbar-left">
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
-        </div>
-    </div>
-    <div class="navbar-right">
-        <a th:href="@{/dashboard}" class="btn-secondary">Back to Dashboard</a>
-    </div>
-</nav>
+<!-- Navbar Fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
 
-<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 2rem;">
-    <h1 style="font-size: 2rem; margin-bottom: 1rem;">Integrations & Apps</h1>
-    <p style="color: #6b7280; margin-bottom: 2.2rem;">Connect your favorite tools and services</p>
+<!-- Sidebar + Main Layout -->
+<div class="layout">
 
-    <div class="integration-grid">
-        <!-- Google Meet -->
-        <div class="integration-card">
-            <div class="integration-icon">📹</div>
-            <div class="integration-title">Google Meet</div>
-            <div class="integration-desc">Automatically generate Google Meet links for your meetings</div>
-            <div th:if="${googleConnected}">
-                <span class="status-badge status-connected">✓ Connected</span>
-                <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
-                    Meet links are automatically created for all bookings
-                </p>
+    <!-- Sidebar Fragment -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Main Page Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 style="font-size: 2rem; margin-bottom: 1rem;">Integrations & Apps</h1>
+            <p style="color: #6b7280; margin-bottom: 2.2rem;">Connect your favorite tools and services</p>
+
+            <div class="integration-grid">
+
+                <!-- Google Meet -->
+                <div class="integration-card">
+                    <div class="integration-icon">📹</div>
+                    <div class="integration-title">Google Meet</div>
+                    <div class="integration-desc">
+                        Automatically generate Google Meet links for your meetings
+                    </div>
+                    <div th:if="${googleConnected}">
+                        <span class="status-badge status-connected">✓ Connected</span>
+                        <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                            Meet links are automatically created for all bookings
+                        </p>
+                    </div>
+                    <div th:unless="${googleConnected}">
+                        <span class="status-badge status-not-connected">Not Connected</span>
+                        <a href="/oauth2/authorization/google" class="btn-primary"
+                           style="margin-top: 1.1rem; display: inline-block;">
+                            Connect Google
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Google Calendar -->
+                <div class="integration-card">
+                    <div class="integration-icon">📅</div>
+                    <div class="integration-title">Google Calendar</div>
+                    <div class="integration-desc">Sync your availability with Google Calendar</div>
+                    <div th:if="${googleConnected}">
+                        <span class="status-badge status-connected">✓ Connected</span>
+                        <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                            Events are synced with your Google Calendar
+                        </p>
+                    </div>
+                    <div th:unless="${googleConnected}">
+                        <span class="status-badge status-not-connected">Not Connected</span>
+                        <a href="/oauth2/authorization/google" class="btn-primary"
+                           style="margin-top: 1rem; display: inline-block;">
+                            Connect Google
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Email Notifications -->
+                <div class="integration-card">
+                    <div class="integration-icon">📧</div>
+                    <div class="integration-title">Email Notifications</div>
+                    <div class="integration-desc">
+                        Automatically send email confirmations and reminders
+                    </div>
+                    <span class="status-badge status-connected">✓ Active</span>
+                    <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
+                        Email notifications are enabled for all bookings
+                    </p>
+                </div>
+
+                <!-- Zoom (Future) -->
+                <div class="integration-card" style="opacity: 0.55;">
+                    <div class="integration-icon">🎥</div>
+                    <div class="integration-title">Zoom</div>
+                    <div class="integration-desc">
+                        Generate Zoom meeting links (Coming Soon)
+                    </div>
+                    <span class="status-badge status-not-connected">Coming Soon</span>
+                </div>
+
             </div>
-            <div th:unless="${googleConnected}">
-                <span class="status-badge status-not-connected">Not Connected</span>
-                <a href="/oauth2/authorization/google" class="btn-primary" style="margin-top: 1.1rem; display: inline-block;">
-                    Connect Google
-                </a>
-            </div>
-        </div>
-
-        <!-- Google Calendar -->
-        <div class="integration-card">
-            <div class="integration-icon">📅</div>
-            <div class="integration-title">Google Calendar</div>
-            <div class="integration-desc">Sync your availability with Google Calendar</div>
-            <div th:if="${googleConnected}">
-                <span class="status-badge status-connected">✓ Connected</span>
-                <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
-                    Events are synced with your Google Calendar
-                </p>
-            </div>
-            <div th:unless="${googleConnected}">
-                <span class="status-badge status-not-connected">Not Connected</span>
-                <a href="/oauth2/authorization/google" class="btn-primary" style="margin-top: 1rem; display: inline-block;">
-                    Connect Google
-                </a>
-            </div>
-        </div>
-
-        <!-- Email Notifications -->
-        <div class="integration-card">
-            <div class="integration-icon">📧</div>
-            <div class="integration-title">Email Notifications</div>
-            <div class="integration-desc">Automatically send email confirmations and reminders</div>
-            <span class="status-badge status-connected">✓ Active</span>
-            <p style="margin-top: 1rem; font-size: 0.95rem; color: #66669f;">
-                Email notifications are enabled for all bookings
-            </p>
-        </div>
-
-        <!-- Zoom (Future) -->
-        <div class="integration-card" style="opacity: 0.55;">
-            <div class="integration-icon">🎥</div>
-            <div class="integration-title">Zoom</div>
-            <div class="integration-desc">Generate Zoom meeting links (Coming Soon)</div>
-            <span class="status-badge status-not-connected">Coming Soon</span>
         </div>
     </div>
 </div>
+
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

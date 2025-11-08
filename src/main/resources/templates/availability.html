@@ -219,59 +219,95 @@
                 padding: 1.5rem 1rem;
             }
         }
+        /* Layout for Navbar + Sidebar + Main content */
+.layout {
+    display: flex;
+    margin-top: 60px; /* same as navbar height */
+    min-height: calc(100vh - 60px);
+}
+
+/* Sidebar positioning */
+.sidebar {
+    width: 240px;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px 0;
+    position: fixed;
+    top: 60px; /* below navbar */
+    left: 0;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    margin-left: 240px; /* same as sidebar width */
+    padding: 2rem;
+    overflow-y: auto;
+}
+
     </style>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-left">
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
-        </div>
-    </div>
-    <div class="navbar-right">
-        <a th:href="@{/dashboard}" class="btn-secondary">Back to Dashboard</a>
-    </div>
-</nav>
+<!-- 🔹 Navbar Fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
 
-<div class="container" style="max-width: 1000px; margin: 2rem auto; padding: 2rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h1 style="font-size: 2rem;">Availability</h1>
-        <button class="btn-primary" onclick="openAvailabilityForm()">➕ Add Availability</button>
-    </div>
+<!-- 🔹 Main Layout -->
+<div class="layout">
+    <!-- Sidebar Fragment -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
 
-    <!-- Availability List -->
-    <div th:if="${#lists.isEmpty(schedules)}" class="card">
-        <p class="empty-state">No availability set. Add your available hours!</p>
-    </div>
+    <!-- 🔹 Main Content -->
+    <main class="main-content">
+        <div class="container" style="max-width: 1000px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem;">Availability</h1>
+                <button class="btn-primary" onclick="openAvailabilityForm()">➕ Add Availability</button>
+            </div>
 
-    <div th:if="${!#lists.isEmpty(schedules)}" class="availability-grid">
-        <div th:each="schedule : ${schedules}" class="availability-card">
-            <div>
-                <div class="day-name" th:text="${schedule.dayOfWeek}">Monday</div>
-                <div class="time-range">
-                    <span th:text="${#temporals.format(schedule.startTime, 'hh:mm a')}"></span>
-                    -
-                    <span th:text="${#temporals.format(schedule.endTime, 'hh:mm a')}"></span>
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(schedules)}" class="card">
+                <p class="empty-state">No availability set. Add your available hours!</p>
+            </div>
+
+            <!-- Availability Grid -->
+            <div th:if="${!#lists.isEmpty(schedules)}" class="availability-grid">
+                <div th:each="schedule : ${schedules}" class="availability-card">
+                    <div>
+                        <div class="day-name" th:text="${schedule.dayOfWeek}">Monday</div>
+                        <div class="time-range">
+                            <span th:text="${#temporals.format(schedule.startTime, 'hh:mm a')}"></span>
+                            -
+                            <span th:text="${#temporals.format(schedule.endTime, 'hh:mm a')}"></span>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <form th:action="@{/availability/toggle/{id}(id=${schedule.id})}" method="post" style="display: inline;">
+                            <button type="submit"
+                                    th:class="${schedule.enabled} ? 'btn-secondary btn-small' : 'btn-primary btn-small'">
+                                <span th:text="${schedule.enabled} ? 'Disable' : 'Enable'"></span>
+                            </button>
+                        </form>
+                        <form th:action="@{/availability/delete/{id}(id=${schedule.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn-danger btn-small"
+                                    onclick="return confirm('Delete this availability?')">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="actions">
-                <form th:action="@{/availability/toggle/{id}(id=${schedule.id})}" method="post" style="display: inline;">
-                    <button type="submit" th:class="${schedule.enabled} ? 'btn-secondary btn-small' : 'btn-primary btn-small'">
-                        <span th:text="${schedule.enabled} ? 'Disable' : 'Enable'"></span>
-                    </button>
-                </form>
-                <form th:action="@{/availability/delete/{id}(id=${schedule.id})}" method="post" style="display: inline;">
-                    <button type="submit" class="btn-danger btn-small" onclick="return confirm('Delete this availability?')">Delete</button>
-                </form>
-            </div>
         </div>
-    </div>
+    </main>
 </div>
 
-<!-- Add Availability Form Overlay -->
-<div class="overlay" id="availabilityOverlay" onclick="closeAvailabilityForm()" style="display: none;"></div>
-<div class="sidebar-panel" id="availabilityPanel" style="display: none;">
+<!-- 🔹 Overlay & Sidebar Panel for Add Form -->
+<div class="overlay" id="availabilityOverlay" onclick="closeAvailabilityForm()"></div>
+
+<div class="sidebar-panel" id="availabilityPanel">
     <div class="panel-header">
         <h2>Add Availability</h2>
         <button class="close-panel-btn" onclick="closeAvailabilityForm()">✕</button>
@@ -309,17 +345,6 @@
         </div>
     </form>
 </div>
-
-<script>
-    function openAvailabilityForm() {
-        document.getElementById('availabilityPanel').style.display = 'block';
-        document.getElementById('availabilityOverlay').style.display = 'block';
-    }
-
-    function closeAvailabilityForm() {
-        document.getElementById('availabilityPanel').style.display = 'none';
-        document.getElementById('availabilityOverlay').style.display = 'none';
-    }
-</script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

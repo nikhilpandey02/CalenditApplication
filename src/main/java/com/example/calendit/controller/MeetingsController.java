@@ -53,6 +53,8 @@ public class MeetingsController {
                 model.addAttribute("slots", slots);
                 model.addAttribute("activeTab", tab);
                 model.addAttribute("user", user);
+                model.addAttribute("picture",user.getPicture());
+                model.addAttribute("name",user.getName());
             }
         }
         

@@ -47,6 +47,8 @@ public class AvailabilityController {
                 model.addAttribute("schedules", schedules);
                 model.addAttribute("user", user);
                 model.addAttribute("daysOfWeek", DayOfWeek.values());
+                model.addAttribute("picture",user.getPicture());
+                model.addAttribute("name",user.getName());
             }
         }
         

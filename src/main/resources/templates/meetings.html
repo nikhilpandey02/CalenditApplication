@@ -3,60 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Meetings - Calendit</title>
+
+    <!-- Global and shared styles -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
     <style>
+        /* Global body styles */
         body {
             background: #f7f8fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             color: #23223c;
+            margin: 0;
         }
 
-        .navbar {
+        /* Layout container */
+        .layout {
+            display: flex;
+            margin-top: 60px; /* height of navbar */
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
             background: #fff;
-            box-shadow: 0 1px 6px rgba(70,80,116,0.06);
-            padding: 1rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            gap: 8px;
-            color: #525ddc;
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 2rem;
+            overflow-y: auto;
         }
 
-        .logo-icon {
-            background: #525ddc;
-            color: white;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .btn-secondary {
-            background: #f3f4fc;
-            color: #476cf2;
-            border: 1px solid #dbeafe;
-            padding: 0.7rem 1.5rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
+        /* Meetings container */
         .container {
             background: #fff;
             border-radius: 13px;
             box-shadow: 0 2px 16px rgba(33,37,41,0.06);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
         .card {
@@ -74,6 +70,7 @@
             text-align: center;
         }
 
+        /* Meetings table */
         .slot-table {
             width: 100%;
             border-collapse: collapse;
@@ -83,25 +80,30 @@
             box-shadow: 0 1px 8px rgba(80,80,116,0.06);
             overflow: hidden;
         }
+
         .slot-table th,
         .slot-table td {
             padding: 1.1rem 1.2rem;
             text-align: left;
             border-bottom: 1px solid #ececfb;
         }
+
         .slot-table th {
             font-weight: 700;
             color: #26267f;
             font-size: 1.04rem;
             background: #f5f6fb;
         }
+
         .slot-table tr:last-child td {
             border-bottom: none;
         }
+
         .slot-table tbody tr:hover {
             background: #f6f7fb;
         }
 
+        /* Badges */
         .badge {
             display: inline-block;
             padding: 0.45em 1.1em;
@@ -110,18 +112,22 @@
             font-weight: 600;
             margin-right: 3px;
         }
+
         .badge-success {
             background-color: #eafbe6;
             color: #1a9a46;
             border: 1px solid #3ee98b20;
         }
+
         .badge-booked {
             background-color: #faebee;
             color: #e22255;
             border: 1px solid #f17a8c12;
         }
 
-        .btn-danger, .btn-small {
+        /* Buttons */
+        .btn-danger,
+        .btn-small {
             background: #fa1e4e;
             color: #fff;
             border: none;
@@ -130,17 +136,20 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: background .13s;
+            transition: background 0.13s;
             margin-right: 5px;
         }
+
         .btn-danger:hover {
             background: #ad1444;
         }
+
         .btn-small {
             font-size: 0.95rem;
             padding: 0.39rem 0.89rem;
         }
 
+        /* Tabs */
         .tabs {
             margin-top: 1rem;
             margin-bottom: 2rem;
@@ -165,91 +174,104 @@
             background: #fff;
             border-bottom-color: #667eea;
         }
+
         .tab:hover {
             color: #555ad3;
         }
 
+        /* Responsive */
         @media (max-width: 900px) {
-            .container {
-                padding: 1.2rem !important;
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
             }
+
+            .sidebar {
+                display: none;
+            }
+
             .slot-table th,
             .slot-table td {
                 padding: 0.7rem 0.7rem;
             }
+
             .tab {
                 padding: 0.8rem 1.2rem;
                 font-size: 1rem;
             }
         }
-
     </style>
 </head>
+
 <body>
-<nav class="navbar">
-    <div class="navbar-left">
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            Calendit
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Sidebar + Main Layout -->
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 style="font-size: 2rem; margin-bottom: 2rem;">Meetings</h1>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <a th:href="@{/meetings?tab=upcoming}"
+                   th:class="${activeTab == 'upcoming'} ? 'tab active' : 'tab'">
+                    📅 Upcoming
+                </a>
+                <a th:href="@{/meetings?tab=past}"
+                   th:class="${activeTab == 'past'} ? 'tab active' : 'tab'">
+                    ⏱️ Past
+                </a>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(slots)}" class="card">
+                <p class="empty-state">No meetings found.</p>
+            </div>
+
+            <!-- Meetings Table -->
+            <div th:if="${!#lists.isEmpty(slots)}">
+                <table class="slot-table">
+                    <thead>
+                    <tr>
+                        <th>Meeting Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="slot : ${slots}">
+                        <td th:text="${slot.meetingName}"></td>
+                        <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>
+                        <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
+                        <td th:text="${slot.durationMinutes + ' min'}"></td>
+                        <td>
+                            <span th:if="${slot.available}" class="badge badge-success">Available</span>
+                            <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
+                        </td>
+                        <td>
+                            <form th:action="@{/slots/remove}" method="post" style="display: inline;">
+                                <input type="hidden" name="slotId" th:value="${slot.id}">
+                                <button type="submit" class="btn-danger btn-small">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="navbar-right">
-        <a th:href="@{/dashboard}" class="btn-secondary">Back to Dashboard</a>
-    </div>
-</nav>
-
-<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 2rem;">
-    <h1 style="font-size: 2rem; margin-bottom: 2rem;">Meetings</h1>
-
-    <!-- Tabs -->
-    <div class="tabs">
-        <a th:href="@{/meetings?tab=upcoming}"
-           th:class="${activeTab == 'upcoming'} ? 'tab active' : 'tab'">
-            📅 Upcoming
-        </a>
-        <a th:href="@{/meetings?tab=past}"
-           th:class="${activeTab == 'past'} ? 'tab active' : 'tab'">
-            ⏱️ Past
-        </a>
-    </div>
-
-    <!-- Meetings List -->
-    <div th:if="${#lists.isEmpty(slots)}" class="card">
-        <p class="empty-state">No meetings found.</p>
-    </div>
-
-    <div th:if="${!#lists.isEmpty(slots)}">
-        <table class="slot-table">
-            <thead>
-            <tr>
-                <th>Meeting Name</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Duration</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="slot : ${slots}">
-                <td th:text="${slot.meetingName}"></td>
-                <td th:text="${#temporals.format(slot.date, 'dd MMM yyyy')}"></td>
-                <td th:text="${#temporals.format(slot.time, 'hh:mm a')}"></td>
-                <td th:text="${slot.durationMinutes + ' min'}"></td>
-                <td>
-                    <span th:if="${slot.available}" class="badge badge-success">Available</span>
-                    <span th:if="${!slot.available}" class="badge badge-booked">Booked</span>
-                </td>
-                <td>
-                    <form th:action="@{/slots/remove}" method="post" style="display: inline;">
-                        <input type="hidden" name="slotId" th:value="${slot.id}">
-                        <button type="submit" class="btn-danger btn-small">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
 </div>
+
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
