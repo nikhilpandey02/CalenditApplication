@@ -50,3 +50,30 @@ window.addEventListener('click', (e) => {
 function showNotification(message) {
     alert(message || 'You have a new notification!');
 }
+
+// =========================
+// COPY BOOKING LINK
+// =========================
+function copyBookingLink() {
+    const input = document.getElementById('bookingLink');
+    if (!input) return;
+
+    navigator.clipboard.writeText(input.value)
+        .then(() => {
+            // Optional: temporary visual feedback
+            const btn = document.querySelector('.copy-link-btn');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.color = '#16a34a'; // success color
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.color = '';
+                }, 2000);
+            }
+        })
+        .catch(err => {
+            console.error('Failed to copy:', err);
+            alert('Unable to copy link.');
+        });
+}
