@@ -722,7 +722,7 @@
             <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">📎 Your Booking Link</h3>
             <p style="color: #6b7280; margin-bottom: 12px;">Share this link with others to let them book time with you:</p>
             <div class="link-box">
-                <input type="text" th:value="${'http://localhost:8080/slots/list?owner=' + email}" readonly class="link-input" id="bookingLink">
+                <input type="text" th:value="${'https://calenditapplication.onrender.com/slots/list?owner=' + email}" readonly class="link-input" id="bookingLink">
                 <button class="copy-link-btn" onclick="copyBookingLink()">Copy</button>
             </div>
         </div>

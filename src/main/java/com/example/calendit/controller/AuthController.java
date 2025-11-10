@@ -50,7 +50,7 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam String email, Model model) {
         try {
-            passwordResetService.sendResetEmail(email, "http://localhost:8080");
+            passwordResetService.sendResetEmail(email, "https://calenditapplication.onrender.com");
             model.addAttribute("message", "Password reset link has been sent to your email.");
         } catch (MessagingException e) {
             model.addAttribute("error", "Failed to send email. Please try again.");
